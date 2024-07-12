@@ -210,6 +210,7 @@ export default class ComponentPane extends React.Component<
     });
 
     _dragon.onDrag((e: any) => {
+      console.log('onDrag', e)
       const position = (window as any)._X6Graph.pageToLocal(
         e.globalX,
         e.globalY
@@ -244,7 +245,7 @@ export default class ComponentPane extends React.Component<
     return (
       <div className={cx("empty")}>
         <img src="//g.alicdn.com/uxcore/pic/empty.png" />
-        <div className={cx("content")}>暂无动作</div>
+        <div className={cx("content")}>暂无逻辑操作</div>
       </div>
     );
   }
@@ -319,16 +320,16 @@ export default class ComponentPane extends React.Component<
   render() {
     return (
       <div className={cx("lowcode-component-panel")}>
-        {/* <div className={cx("header")}>
+        <div className={cx("header")}>
           <Search
             className={cx("search")}
-            placeholder="搜索组件"
+            placeholder="搜索逻辑流操作"
             shape="simple"
             hasClear
             onSearch={this.handleSearch}
             onChange={this.handleSearch}
           />
-        </div> */}
+        </div>
         {this.renderContent()}
       </div>
     );

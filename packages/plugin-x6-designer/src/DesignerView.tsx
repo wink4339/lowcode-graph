@@ -4,7 +4,7 @@ import { Editor } from '@alilc/lowcode-editor-core';
 import { initGraph } from "./graph/initGraph";
 import Nodes from "./items";
 import { render } from "react-dom";
-import { registerShape } from "./graph/registerShape";
+import { registerShape, registerConnector } from "./graph/registerShape";
 import { initEvents } from "./graph/initEvents";
 import x6Designer from './designer';
 
@@ -26,6 +26,7 @@ export default class DesignerView extends PureComponent<IProps> {
   }
 
   componentDidMount() {
+    registerConnector();
     registerShape();
 
     // @ts-ignore
@@ -48,9 +49,18 @@ export default class DesignerView extends PureComponent<IProps> {
 
   render() {
     return (
-      <div id="design-view" className="design-view" ref={this.refContainer} style={{ width: '100%' }}>
-        <div id="design-view-nodes" ref={this.refNodesContainer}></div>
+      <div className="lc-designer lowcode-plugin-designer">
+        <div className="lc-project">
+          <div className="lc-simulator-canvas lc-simulator-device-default">
+            <div id="design-view" ref={this.refContainer} >
+              <div id="design-view-nodes" ref={this.refNodesContainer}></div>
+            </div>
+          </div>
+        </div>
       </div>
+      // <div id="design-view" className="design-view" ref={this.refContainer} >
+      //   <div id="design-view-nodes" ref={this.refNodesContainer}></div>
+      // </div>
     )
   }
 }

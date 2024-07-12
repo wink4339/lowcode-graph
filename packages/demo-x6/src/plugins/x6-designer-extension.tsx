@@ -49,7 +49,7 @@ function pluginX6DesignerExtension(ctx: ILowCodePluginContext) {
         const { selectors } = args
         const content = selectors.foContent as HTMLDivElement
         if (content) {
-          ReactDOM.render(<div>自定义 react 标签</div>, content)
+          ReactDOM.render(<div></div>, content)
         }
       })
     }

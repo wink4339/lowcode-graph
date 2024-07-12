@@ -47,7 +47,7 @@ export function initEvents(graph: Graph) {
       if (cell.isEdge()) {
         cell.attr('line/stroke', SelectedStrokeColor);
       } else {
-        cell.attr('body/strokeWidth', 1.5); // 边框变粗到 1.5
+        cell.attr('body/strokeWidth', 1); // 边框变粗到 1.5
         cell.attr('body/stroke', SelectedStrokeColor); // 边框颜色
 
         const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>;

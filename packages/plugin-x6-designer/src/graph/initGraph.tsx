@@ -40,6 +40,7 @@ export function initGraph(container: HTMLElement) {
       allowEdge: true,
       allowPort: true,
       highlight: true,
+      connector: 'algo-connector',
       createEdge() {
         // 创建新边
         return new Shape.Edge({
@@ -97,12 +98,11 @@ export function initGraph(container: HTMLElement) {
 
   // 适应画布
   const getContainerSize = () => {
-    const leftPanel = document.querySelector('.lc-left-area')?.clientWidth || 0;
-    const rightPanel =
-      document.querySelector('.lc-right-area')?.clientWidth || 0;
+    const width = document.querySelector('.lc-simulator-canvas')?.clientWidth || 0
+    const height = document.querySelector('.lc-simulator-canvas')?.clientHeight || 0
     return {
-      width: document.body.offsetWidth - leftPanel - rightPanel,
-      height: document.querySelector('.lc-main-area')?.clientHeight || 0,
+      width: width,
+      height: height,
     };
   };
   const resizeFn = () => {

@@ -15,7 +15,7 @@ const PluginX6Designer = (ctx: ILowCodePluginContext) => {
       return x6Designer;
     },
     init() {
-      const { skeleton, project } = ctx;
+      const { skeleton, project, simulatorHost  } = ctx;
       skeleton.remove({
         name: 'designer',
         area: 'mainArea',
@@ -31,10 +31,13 @@ const PluginX6Designer = (ctx: ILowCodePluginContext) => {
         }
       });
 
+      
+
       // bind nodes state
       rootState.bindNodes(project.currentDocument);
 
       project.onChangeDocument((doc) => {
+        console.log('onChangeDocument')
         rootState.disposeDocumentEvent();
         rootState.bindNodes(project.currentDocument);
       });

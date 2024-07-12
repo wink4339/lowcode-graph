@@ -19,7 +19,7 @@
     "registry": "https://registry.npmjs.org/"
   },
   "dependencies": {
-    "@alilc/lowcode-engine": "^1"
+    "@alilc/lowcode-engine": "^1.1.2"
   },
   "devDependencies": {
     "@alib/build-scripts": "^0.1.18",

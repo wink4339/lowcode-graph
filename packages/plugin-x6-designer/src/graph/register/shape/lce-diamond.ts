@@ -10,8 +10,6 @@ export const LceDiamond = {
       strokeWidth,
       points: "0, 35, 62, 0, 124, 35, 62, 70",
       fill: '#fff',
-      rx: 10,
-      ry: 10
     },
     text: {
       width: 60,

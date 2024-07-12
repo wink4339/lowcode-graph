@@ -32,14 +32,14 @@ const PluginMaterialsPane = (ctx: IPublicModelPluginContext) => {
         props: {
           align: 'left',
           icon: Icon,
-          description: "动作库",
+          description: "逻辑流",
         },
         panelProps: {
           area: 'leftFixedArea',
           floatable: true,
-          hideTitleBar: false,
-          title: "动作库",
-          width: 192,
+          hideTitleBar: true,
+          title: "逻辑流",
+          width: 194,
         },
       });
 

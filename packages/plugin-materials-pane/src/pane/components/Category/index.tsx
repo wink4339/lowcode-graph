@@ -59,16 +59,12 @@ export default class Category extends React.Component<Props, State> {
     const { children, name } = this.props;
     const { expand } = this.state;
     return (
-      <div className={cx("category")}>
-        <div className={cx("header")} onClick={this.handleToggle}>
-          <div className={cx("icon", { expand })}>
-            <Icon
-              type="arrow-right"
-              size="small"
-              style={{ color: "rgba(0,0,0,0.3)"}}
-            />
+      <div className={cx('category')}>
+        <div className={cx('header')}>
+          <div className={cx('title')}>{name}</div>
+          <div className={cx('icon', { expand })} onClick={this.handleToggle}>
+            <Icon type="arrow-down" size="xxs" />
           </div>
-          <div className={cx("title")}>{name}</div>
         </div>
         <Animate
           animation="expand"

@@ -6,37 +6,25 @@
   "children": [
     {
       "id": "node-start",
-      "componentName": "StartEnd",
-      "title": "开始节点",
+      "componentName": "StartNode",
+      "title": "开始",
       "props": {
-        "name": "开始节点",
+        "name": "开始",
         "position": {
-          "x": 82,
-          "y": 71
-        }
-      }
-    },
-    {
-      "id": "node_ockn610kx9m",
-      "componentName": "SendEmail",
-      "title": "发送邮件",
-      "props": {
-        "name": "发送邮件",
-        "position": {
-          "x": 84,
-          "y": 263
+          "x": 0,
+          "y": 200
         }
       }
     },
     {
       "id": "node-end",
-      "componentName": "StartEnd",
+      "componentName": "EndNode",
       "title": "结束节点",
       "props": {
         "name": "结束节点",
         "position": {
-          "x": 82,
-          "y": 455
+          "x": 200,
+          "y": 200
         }
       }
     },
@@ -47,21 +35,9 @@
       "props": {
         "name": "线",
         "source": "node-start",
-        "target": "node_ockn610kx9m",
-        "sourcePortId": "b",
-        "targetPortId": "t"
-      }
-    },
-    {
-      "id": "node_ockn610kx9a",
-      "componentName": "Line",
-      "title": "线",
-      "props": {
-        "name": "线",
-        "source": "node_ockn610kx9m",
         "target": "node-end",
-        "sourcePortId": "b",
-        "targetPortId": "t"
+        "sourcePortId": "r",
+        "targetPortId": "l"
       }
     }
   ]
