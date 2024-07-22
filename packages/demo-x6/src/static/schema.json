@@ -19,9 +19,9 @@
     {
       "id": "node-end",
       "componentName": "EndNode",
-      "title": "结束节点",
+      "title": "结束",
       "props": {
-        "name": "结束节点",
+        "name": "结束",
         "position": {
           "x": 200,
           "y": 200
