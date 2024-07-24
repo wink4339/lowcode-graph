@@ -210,7 +210,6 @@ export default class ComponentPane extends React.Component<
     });
 
     _dragon.onDrag((e: any) => {
-      console.log('onDrag', e)
       const position = (window as any)._X6Graph.pageToLocal(
         e.globalX,
         e.globalY
@@ -222,9 +221,6 @@ export default class ComponentPane extends React.Component<
     });
 
     _dragon.onDragend(() => {
-      // const mainAreaDom = this.x6GraphDom.parentNode;
-      // mainAreaDom.removeChild(mainAreaDom.lastChild);
-
       const doc = project.getCurrentDocument();
       const node = doc?.createNode(dragTarget.data);
       const rootNode = project.currentDocument?.root;

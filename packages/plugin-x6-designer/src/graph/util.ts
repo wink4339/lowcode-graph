@@ -37,3 +37,72 @@ export function showPorts(ports: NodeListOf<SVGAElement>, show: boolean) {
     ports[i].style.visibility = show ? 'visible' : 'hidden';
   }
 }
+
+/**
+ * 获取节点的端口（含x, y位置）
+ * @param node 
+ * @returns 
+ */
+export function getNodePorts(node: any) {
+  const position = node.position()
+  const size = node.size()
+  const ports = node.getPorts();
+  ports.forEach((port: any) => {
+    switch(port.id) {
+      case 'r':
+        port.x = position.x + size.width
+        port.y = position.y + size.height / 2
+        break
+      case 'l':
+        port.x = position.x
+        port.y = position.y + size.height / 2
+        break
+      case 't':
+        port.x = position.x + size.width / 2
+        port.y = position.y
+        break
+      case 'b':
+        port.x = position.x + size.width / 2
+        port.y = position.y + size.height
+        break
+    }
+  })
+  return ports
+}
+
+/**
+ * 获取两节点之间最近的两端口
+ * @param source 源节点
+ * @param target 目标节点
+ */
+export function getShortBothPort(source: any, target: any) {
+  if (source == null || target == null) {
+    return null
+  }
+  const sourcePorts = getNodePorts(source)
+  const targetPorts = getNodePorts(target)
+
+  let closestSourcePort = null;
+  let closestTargetPort = null;
+  let minDistance = Infinity;
+
+  sourcePorts.forEach((sourcePort: any) => {
+    targetPorts.forEach((targetPort: any) => {
+      const distance = Math.sqrt(
+        Math.pow(targetPort.x - sourcePort.x, 2) +
+        Math.pow(targetPort.y - sourcePort.y, 2)
+      );
+      if (distance < minDistance) {
+        minDistance = distance;
+        closestSourcePort = sourcePort;
+        closestTargetPort = targetPort;
+      }
+    });
+  });
+  if (closestSourcePort == null || closestTargetPort == null) {
+    return null
+  }
+  return [closestSourcePort, closestTargetPort]
+}
+
+

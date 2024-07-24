@@ -1,6 +1,7 @@
 import { Graph, Shape } from '@antv/x6';
 import { project } from '@alilc/lowcode-engine';
 import x6Designer from '../designer';
+import { getShortBothPort } from './util';
 
 export function initGraph(container: HTMLElement) {
   //@ts-ignore
@@ -35,35 +36,43 @@ export function initGraph(container: HTMLElement) {
       },
       allowBlank: false, // 不允许连接到画布空白位置的点
       allowLoop: false, // 不允许创建循环连线
-      allowMulti: false, // 不允许在相同的起始节点和终止之间创建多条边
+      allowMulti: true, // 不允许在相同的起始节点和终止之间创建多条边
       allowNode: false,
       allowEdge: true,
       allowPort: true,
       highlight: true,
-      connector: 'algo-connector',
+      connector: "rounded",
+      router: {
+        name: 'er',
+      },
       createEdge() {
         // 创建新边
+        console.log("创建新边")
         return new Shape.Edge({
           attrs: {
             line: {
-              strokeDasharray: '5 5',
-              stroke: '#4C6079',
-              strokeOpacity: 0.5,
+              stroke: '#657c99',
               strokeWidth: 1,
               targetMarker: {
-                // 箭头
                 name: 'block',
                 size: 8,
               },
             },
           },
-          zIndex: 0,
         });
       },
       validateEdge({ edge }) {
         const doc = project.currentDocument!;
         const contentEdge = doc.getNodeById(edge.id);
-        console.log(edge.getSourceCellId(), edge.getTargetCellId());
+   
+        const sourceCell = edge.getSourceCell();
+        const targetCell = edge.getTargetCell();
+
+        const [sourcePort, targetPort]: any = getShortBothPort(sourceCell, targetCell)
+        if (sourcePort == null || targetCell == null) {
+          return false
+        }
+
         if (!contentEdge) {
           const node = doc.createNode({
             componentName: 'Line',
@@ -72,8 +81,8 @@ export function initGraph(container: HTMLElement) {
               name: '线',
               source: edge.getSourceCellId(),
               target: edge.getTargetCellId(),
-              sourcePortId: edge.getSourcePortId(),
-              targetPortId: edge.getTargetPortId()
+              sourcePortId: sourcePort.id,
+              targetPortId: targetPort.id
             },
           });
           const rootNode = project.currentDocument?.root;
@@ -81,8 +90,8 @@ export function initGraph(container: HTMLElement) {
         } else {
           contentEdge.setPropValue('source', edge.getSourceCellId());
           contentEdge.setPropValue('target', edge.getTargetCellId());
-          contentEdge.setPropValue('sourcePortId', edge.getSourcePortId());
-          contentEdge.setPropValue('targetPortId', edge.getTargetPortId());
+          contentEdge.setPropValue('sourcePortId', sourcePort.id);
+          contentEdge.setPropValue('targetPortId', targetPort.id);
         }
 
         return false;

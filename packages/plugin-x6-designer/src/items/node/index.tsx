@@ -57,7 +57,6 @@ class NodeComponent extends React.PureComponent<Props> {
 
     // model 更新触发渲染
     project.currentDocument?.onChangeNodeProp(({ key, oldValue, newValue, node }) => {
-      console.log("onChangeNodeProp", key, oldValue, newValue, node)
       if (node.id !== model.id) {
         return;
       }

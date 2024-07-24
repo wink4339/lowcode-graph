@@ -1,12 +1,11 @@
 import { rootState } from '../items/state';
 import { project, Node as Model } from '@alilc/lowcode-engine';
 import { FunctionExt, Graph, Node, Point, EdgeView, Edge, Cell } from '@antv/x6';
-import { showPorts } from './util';
+import { getShortBothPort, showPorts } from './util';
 
 export const NormalStrokeColor = '#4C6079';
-export const SelectedStrokeColor = '#027AFF'; // 选中边框色
-export const SelectedFillColor = '#C6DEF8'; // 选中填充色
-export const ErrorColor = '#ff5219'; // 红框错误
+export const SelectedStrokeColor = '#4e7ff7';
+export const NormalNotEdgeStrokeColor = "#ffffff";
 
 // 初始化画布事件
 export function initEvents(graph: Graph) {
@@ -15,15 +14,15 @@ export function initEvents(graph: Graph) {
   });
 
   // 增加 node:added 事件，将 ports 数据更新到 schema 中，便于保存
-  graph.on('node:added',({ node, index, options }) => {
-    const nodeModel = project.currentDocument?.getNodeById(node.id) as Model;
+  graph.on('node:added', ({ node, index, options }) => {
+    const nodeModel = project.currentDocument?.getNodeById(node.id) as any as Model;
     if (nodeModel) {
       nodeModel.setPropValue('ports', node.getPorts());
     }
   });
 
   graph.on('node:moved', ({ e, x, y, node, view }) => {
-    const nodeModel = project.currentDocument?.getNodeById(node.id) as Model;
+    const nodeModel = project.currentDocument?.getNodeById(node.id) as any as Model;
     if (nodeModel) {
       nodeModel.setPropValue('position', node.getPosition());
     }
@@ -40,19 +39,18 @@ export function initEvents(graph: Graph) {
     selected: Cell[]  // 被选中的节点/边
   }) => {
     const { selected, removed, added } = args;
-    const ids = selected.map(cell => cell.id);
-    project.currentDocument?.selection.selectAll(ids);
 
     selected.forEach(cell => {
       if (cell.isEdge()) {
         cell.attr('line/stroke', SelectedStrokeColor);
-      } else {
-        cell.attr('body/strokeWidth', 1); // 边框变粗到 1.5
-        cell.attr('body/stroke', SelectedStrokeColor); // 边框颜色
-
-        const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>;
-        if (ports) {
-          showPorts(ports, true);
+        cell.toFront()
+        const sourceNode = cell.getSourceCell();
+        if (sourceNode) {
+          sourceNode.toFront();
+        }
+        const targetNode = cell.getTargetCell();
+        if (targetNode) {
+          targetNode.toFront();
         }
       }
     });
@@ -61,66 +59,87 @@ export function initEvents(graph: Graph) {
       if (cell.isEdge()) {
         cell.attr('line/stroke', NormalStrokeColor);
         cell.toBack();
-        cell.removeTool('target-arrowhead');
       } else {
-        cell.attr('body/strokeWidth', 1);
-        cell.attr('body/stroke', NormalStrokeColor);
-        cell.toBack();
-        const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>;
-        if (ports) {
-          showPorts(ports, false);
+        const nodeModel = project.currentDocument?.getNodeById(cell.id) as any as Model;
+        if (nodeModel) {
+          nodeModel.setPropValue('focused', false)
         }
       }
     });
   });
 
-  graph.on('cell:mouseenter', ({ cell }) => {
-    cell.toFront();
+  // 节点位置变化
+  // TODO： 要做懒延迟
+  graph.on('node:change:position', ({ node }) => {
+    const position = node.position()
+    const connectedEdges = graph.getConnectedEdges(node)
+    connectedEdges.forEach(edge => {
+      const doc = project.currentDocument!;
+      const contentEdge = doc.getNodeById(edge.id);
 
-    if (cell.isEdge()) {
-      cell.attr('line/stroke', SelectedStrokeColor);
-      cell.addTools([
-        {
-          name: 'target-arrowhead',
-          args: {
-            attrs: {
-              'fill-opacity': 0,
-              'stroke-opacity': 0,
-            },
-          },
-        },
-      ]);
-    } else {
-      cell.attr('body/strokeWidth', 1.5);
-      cell.attr('body/stroke', SelectedStrokeColor);
+      const sourceCell = edge.getSourceCell();
+      const targetCell = edge.getTargetCell();
 
-      const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>;
-      cell.toFront();
-      if (ports) {
-        showPorts(ports, true);
+      const [sourcePort, targetPort]: any = getShortBothPort(sourceCell, targetCell)
+      if (sourcePort == null || targetCell == null) {
+        return
       }
+
+      if (!contentEdge) {
+        // const node = doc.createNode({
+        //   componentName: 'Line',
+        //   title: '线',
+        //   props: {
+        //     name: '线',
+        //     source: edge.getSourceCellId(),
+        //     target: edge.getTargetCellId(),
+        //     sourcePortId: sourcePort.id,
+        //     targetPortId: targetPort.id
+        //   },
+        // });
+        // const rootNode = project.currentDocument?.root;
+        // project.currentDocument?.insertNode(rootNode!, node);
+      } else {
+        contentEdge.setPropValue('sourcePortId', sourcePort.id);
+        contentEdge.setPropValue('targetPortId', targetPort.id);
+      }
+    })
+  })
+
+
+  // 鼠标按下（节点）
+  graph.on('node:mousedown', ({ cell }) => {
+    graph.cleanSelection();
+    const nodeModel = project.currentDocument?.getNodeById(cell.id) as any as Model;
+    if (nodeModel) {
+      nodeModel.setPropValue('focused', true)
+    }
+    cell.toFront()
+  });
+
+  // 鼠标松开（节点）
+  graph.on('node:mouseup', ({ cell }) => {
+    graph.select(cell);
+  });
+
+  // 鼠标移入（节点）
+  graph.on('node:mouseenter', ({ cell }) => {
+    const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>;
+    if (ports) {
+      showPorts(ports, true);
     }
   });
 
-  graph.on('cell:mouseleave', ({ cell }) => {
-    const selected = project.currentDocument?.selection.selected;
-    if (selected?.includes(cell.id)) {
-      return;
+  // 鼠标移出（节点）
+  graph.on('node:mouseleave', ({ cell }) => {
+    const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>;
+    if (ports) {
+      showPorts(ports, false);
     }
+  });
 
-    if (cell.isEdge()) {
-      cell.attr('line/stroke', NormalStrokeColor);
-      cell.toBack();
-      cell.removeTool('target-arrowhead');
-    } else {
-      cell.attr('body/strokeWidth', 1);
-      cell.attr('body/stroke', NormalStrokeColor);
-      // this.node.attr('body/fill', '#fff');
-      cell.toBack();
-      const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>;
-      if (ports) {
-        showPorts(ports, false);
-      }
-    }
+  // 鼠标按下（边）
+  graph.on('edge:mousedown', ({ cell }) => {
+    cell.attr('line/stroke', SelectedStrokeColor);
   });
 }
