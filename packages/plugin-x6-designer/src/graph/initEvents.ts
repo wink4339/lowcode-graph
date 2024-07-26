@@ -46,7 +46,6 @@ export function initEvents(graph: Graph) {
       project.currentDocument?.selection.selectAll(newSelectedIds);
     }
 
-    console.log("xxx")
     selected.forEach(cell => {
       if (cell.isEdge()) {
         cell.attr('line/stroke', SelectedStrokeColor);
