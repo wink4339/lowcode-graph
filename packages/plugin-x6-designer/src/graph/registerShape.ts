@@ -14,13 +14,42 @@ export function registerConnector() {
   Graph.registerConnector(
     'algo-connector',
     (s, e) => {
+      console.log("s", s, "e", e)
+      
+      let sx = Math.abs(s.x)
+      let ex = Math.abs(e.x)
+      if (sx < ex) {
+        const tmp = sx
+        sx = ex
+        ex = tmp
+      }
+      let sy = Math.abs(s.y)
+      let ey = Math.abs(e.y)
+      if (sy < ey) {
+        const tmp = sy
+        sy = ey
+        ey = tmp
+      }
+      
+
+      if (sx > ex - 4 && sx < ex + 4 && sy > ey - 4 && sy < ey + 4) {
+        const radius = 10;
+        return Path.normalize(
+          `M ${s.x} ${s.y}
+           m -${radius}, 0
+           a ${radius},${radius} 0 1,0 ${radius * 2},0
+           a ${radius},${radius} 0 1,0 -${radius * 2},0
+          `,
+        )
+      }
+
       const offset = 4
       const deltaX = Math.abs(e.x - s.x)
       const control = Math.floor((deltaX / 3) * 2)
-  
+
       const v1 = { x: s.x + offset + control, y: s.y }
       const v2 = { x: e.x - offset - control, y: e.y }
-  
+
       return Path.normalize(
         `M ${s.x} ${s.y}
          L ${s.x + offset} ${s.y}

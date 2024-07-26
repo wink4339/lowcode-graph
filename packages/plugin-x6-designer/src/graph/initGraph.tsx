@@ -46,8 +46,6 @@ export function initGraph(container: HTMLElement) {
         name: 'er',
       },
       createEdge() {
-        // 创建新边
-        console.log("创建新边")
         return new Shape.Edge({
           attrs: {
             line: {

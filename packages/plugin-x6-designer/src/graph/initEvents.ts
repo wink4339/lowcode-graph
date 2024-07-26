@@ -68,44 +68,18 @@ export function initEvents(graph: Graph) {
     });
   });
 
-  // 节点位置变化
-  // TODO： 要做懒延迟
+  // 位置变化（节点）
   graph.on('node:change:position', ({ node }) => {
-    const position = node.position()
     const connectedEdges = graph.getConnectedEdges(node)
     connectedEdges.forEach(edge => {
-      const doc = project.currentDocument!;
-      const contentEdge = doc.getNodeById(edge.id);
-
       const sourceCell = edge.getSourceCell();
       const targetCell = edge.getTargetCell();
 
       const [sourcePort, targetPort]: any = getShortBothPort(sourceCell, targetCell)
-      if (sourcePort == null || targetCell == null) {
-        return
-      }
-
-      if (!contentEdge) {
-        // const node = doc.createNode({
-        //   componentName: 'Line',
-        //   title: '线',
-        //   props: {
-        //     name: '线',
-        //     source: edge.getSourceCellId(),
-        //     target: edge.getTargetCellId(),
-        //     sourcePortId: sourcePort.id,
-        //     targetPortId: targetPort.id
-        //   },
-        // });
-        // const rootNode = project.currentDocument?.root;
-        // project.currentDocument?.insertNode(rootNode!, node);
-      } else {
-        contentEdge.setPropValue('sourcePortId', sourcePort.id);
-        contentEdge.setPropValue('targetPortId', targetPort.id);
-      }
+      edge.setSource({ cell: edge.getSourceCellId(), port: sourcePort.id })
+      edge.setTarget({ cell: edge.getTargetCellId(), port: targetPort.id })
     })
   })
-
 
   // 鼠标按下（节点）
   graph.on('node:mousedown', ({ cell }) => {
