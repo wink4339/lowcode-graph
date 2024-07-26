@@ -39,7 +39,14 @@ export function initEvents(graph: Graph) {
     selected: Cell[]  // 被选中的节点/边
   }) => {
     const { selected, removed, added } = args;
+    const selectedIds = selected.map(cell => cell.id);
+    const oldSelectedIds = project.currentDocument?.selection.getNodes().filter(e => e.id) || []
+    const newSelectedIds = selectedIds.filter(id => !oldSelectedIds.includes(id as any))
+    if (newSelectedIds.length > 0) {
+      project.currentDocument?.selection.selectAll(newSelectedIds);
+    }
 
+    console.log("xxx")
     selected.forEach(cell => {
       if (cell.isEdge()) {
         cell.attr('line/stroke', SelectedStrokeColor);

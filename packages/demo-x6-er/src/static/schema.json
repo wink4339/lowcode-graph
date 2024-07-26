@@ -5,39 +5,15 @@
   "props": {},
   "children": [
     {
-      "id": "node-start",
-      "componentName": "StartNode",
-      "title": "开始",
+      "id": "e",
+      "componentName": "EntityNode",
+      "title": "实体",
       "props": {
-        "name": "开始",
+        "name": "实体",
         "position": {
           "x": 0,
           "y": 200
         }
-      }
-    },
-    {
-      "id": "node-end",
-      "componentName": "EndNode",
-      "title": "结束",
-      "props": {
-        "name": "结束",
-        "position": {
-          "x": 200,
-          "y": 200
-        }
-      }
-    },
-    {
-      "id": "node_ockn610kx9b",
-      "componentName": "Line",
-      "title": "线",
-      "props": {
-        "name": "线",
-        "source": "node-start",
-        "target": "node-end",
-        "sourcePortId": "r",
-        "targetPortId": "l"
       }
     }
   ]
