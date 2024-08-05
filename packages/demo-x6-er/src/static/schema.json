@@ -1,0 +1,43 @@
+{
+  "componentName": "Page",
+  "id": "node_dockcviv8fo1",
+  "fileName": "",
+  "props": {},
+  "children": [
+    {
+      "id": "e",
+      "componentName": "EntityNode",
+      "title": "实体",
+      "props": {
+        "name": "实体",
+        "position": {
+          "x": 0,
+          "y": 200
+        },
+        "fields": [
+          {
+            "fieldId": "id" ,
+            "fieldName": "ID",
+            "fieldType": "CHAR",
+            "fieldDefaultValue": "",
+            "fieldDescription": ""
+          },
+          {
+            "fieldId": "create_time" ,
+            "fieldName": "创建时间",
+            "fieldType": "DATETIME",
+            "fieldDefaultValue": "",
+            "fieldDescription": ""
+          },
+          {
+            "fieldId": "update_time" ,
+            "fieldName": "修改时间",
+            "fieldType": "DATETIME",
+            "fieldDefaultValue": "",
+            "fieldDescription": ""
+          }
+        ]
+      }
+    }
+  ]
+}
