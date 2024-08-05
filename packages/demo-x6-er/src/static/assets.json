@@ -2,20 +2,20 @@
   "packages": [
     {
       "package": "@wink4339/lce-x6-er-items",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "library": "Wink4339LceX6ErItems",
       "urls": [
-        "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.1/build/lowcode/render/default/view.js",
-        "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.1/build/lowcode/render/default/view.css"
+        "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.2/build/lowcode/render/default/view.js",
+        "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.2/build/lowcode/render/default/view.css"
       ],
       "editUrls": [
-        "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.1/build/lowcode/view.js",
-        "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.1/build/lowcode/view.css"
+        "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.2/build/lowcode/view.js",
+        "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.2/build/lowcode/view.css"
       ],
       "advancedUrls": {
         "default": [
-          "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.1/build/lowcode/render/default/view.js",
-          "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.1/build/lowcode/render/default/view.css"
+          "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.2/build/lowcode/render/default/view.js",
+          "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.2/build/lowcode/render/default/view.css"
         ]
       },
       "advancedEditUrls": {}
@@ -26,42 +26,27 @@
       "exportName": "Wink4339LceX6ErItemsMeta",
       "npm": {
         "package": "@wink4339/lce-x6-er-items",
-        "version": "1.0.1"
+        "version": "1.0.2"
       },
-      "url": "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.1/build/lowcode/meta.js",
+      "url": "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.2/build/lowcode/meta.js",
       "urls": {
-        "default": "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.1/build/lowcode/meta.js"
+        "default": "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.2/build/lowcode/meta.js"
       },
       "advancedUrls": {
         "default": [
-          "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.1/build/lowcode/meta.js"
+          "https://assets.yunxy.top/prod/npm/@wink4339/lce-x6-er-items/1.0.2/build/lowcode/meta.js"
         ]
       }
     }
   ],
   "sort": {
     "groupList": [
-      "精选组件",
-      "原子组件"
+      "数据模型"
     ],
-    "categoryList": [
-      "基础元素",
-      "布局容器类",
-      "表格类",
-      "表单详情类",
-      "帮助类",
-      "对话框类",
-      "业务类",
-      "通用",
-      "引导",
-      "信息输入",
-      "信息展示",
-      "信息反馈"
-    ]
+    "categoryList": []
   },
   "groupList": [
-    "精选组件",
-    "原子组件"
+    "数据模型"
   ],
   "ignoreComponents": {}
 }
