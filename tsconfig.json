@@ -44,6 +44,9 @@
       "@alilc/lce-graph-x6-designer": [
         "plugin-x6-designer/src"
       ],
+      "@wink4339/lce-graph-x6-er-designer": [
+        "plugin-x6-er-designer/src"
+      ],
       "@alilc/lce-graph-tools": [
         "plugin-tools/src"
       ],
@@ -52,6 +55,9 @@
       ],
       "@alilc/lce-graph-materials-pane": [
         "plugin-materials-pane/src"
+      ],
+      "@wink4339/lce-graph-er-materials-pane": [
+        "plugin-er-materials-pane/src"
       ],
     },
     "outDir": "lib"
