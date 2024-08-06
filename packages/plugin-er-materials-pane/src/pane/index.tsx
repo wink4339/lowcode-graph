@@ -319,7 +319,7 @@ export default class ComponentPane extends React.Component<
         <div className={cx("header")}>
           <Search
             className={cx("search")}
-            placeholder="搜索逻辑流操作"
+            placeholder="请输入"
             shape="simple"
             hasClear
             onSearch={this.handleSearch}

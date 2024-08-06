@@ -11,7 +11,9 @@ async function registerPlugins() {
     schema
   });
   await plugins.register(PluginX6ErDesigner);
-  await plugins.register(PluginErMaterialsPane);
+  await plugins.register(PluginErMaterialsPane, {
+    hideLeftArea: false
+  });
 };
 
 (async function main() {
