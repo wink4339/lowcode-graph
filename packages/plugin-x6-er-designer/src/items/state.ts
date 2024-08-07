@@ -3,7 +3,6 @@ import { IPublicModelDocumentModel } from '@alilc/lowcode-types';
 
 export const EdgeComponentName = 'Line'; // 边 组件独一 componentName
 
-
 export class RootState {
   @observable.shallow private nodes: any[] = []; // 单独存一份 nodes 状态数据
 
@@ -50,5 +49,3 @@ export class RootState {
     }
   }
 }
-
-export const rootState = new RootState();

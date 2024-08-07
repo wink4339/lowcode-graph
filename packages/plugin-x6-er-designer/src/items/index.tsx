@@ -3,11 +3,13 @@ import { observer } from 'mobx-react';
 import NodeComponent from './node';
 import EdgeComponent from './edge';
 import { Node, Edge, Graph } from '@antv/x6';
-import { EdgeComponentName, rootState, RootState } from "./state";
+import { RootState } from "./state";
 import './index.less';
 
 interface Props {
   graph: Graph;
+  rootState: RootState;
+  ctx: any
 }
 
 /**
@@ -65,7 +67,7 @@ class Nodes extends React.PureComponent<Props> {
   }
 
   render() {
-    const { graph } = this.props;
+    const { graph, rootState } = this.props;
     const nodes = rootState.getNodes();
     const items = nodes.filter(v => typeof v.isPage === 'function' ? !v.isPage() : !v.isPage);
     return (
