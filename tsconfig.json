@@ -41,7 +41,7 @@
       "@alilc/lce-graph-g6-designer": [
         "plugin-g6-designer/src"
       ],
-      "@alilc/lce-graph-x6-designer": [
+      "@wink4339/lce-graph-x6-designer": [
         "plugin-x6-designer/src"
       ],
       "@wink4339/lce-graph-x6-er-designer": [

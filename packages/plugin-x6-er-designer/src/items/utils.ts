@@ -64,7 +64,7 @@ export function updateNodeProps(model: NodeModel, node: Node) {
     if (item.name === 'fields') {
       node.resize(192, (value?.length ?? 0) * 32 + (value && value.length ? 44 : 76));
     }
-    node.prop(item.name, deepClone(value));
+    node.prop(item.name, value);
   });
 }
 

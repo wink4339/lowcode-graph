@@ -27,7 +27,7 @@ class Designer implements IDesigner {
   public onNodeRenderCb: Array<(model: NodeModel, node: Node) => void> = [];
   public onEdgeRenderCb: Array<(model: NodeModel, edge: Edge) => void> = [];
   public onEdgeLabelRenderCb: Array<(args: Graph.Hook.OnEdgeLabelRenderedArgs) => void> = [];
-  public graph: Graph;
+  public graph: any;
 
   // node model data => graph node render
   public onNodeRender = (cb?: (model: NodeModel, node: Node) => void) => {
@@ -52,7 +52,7 @@ class Designer implements IDesigner {
     return this.onEdgeLabelRenderCb;
   }
 
-  init(ctx: any, graph: Graph) {
+  init(ctx: any, graph: any) {
     this.graph = graph;
     this.commandManager.init(ctx, graph);
   }
