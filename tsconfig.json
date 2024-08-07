@@ -53,7 +53,7 @@
       "@alilc/g-react-renderer": [
         "g-react-renderer/src"
       ],
-      "@alilc/lce-graph-materials-pane": [
+      "@wink4339/lce-graph-materials-pane": [
         "plugin-materials-pane/src"
       ],
       "@wink4339/lce-graph-er-materials-pane": [

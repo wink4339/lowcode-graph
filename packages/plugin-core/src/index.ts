@@ -3,7 +3,6 @@ import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import Inject, { injectAssets } from '@alilc/lowcode-plugin-inject';
 
 const PluginCore = (ctx: IPublicModelPluginContext, options: any) => {
-  console.log("pluginCore参数：", options)
   return {
     async init() {
       const { material, project, plugins } = ctx;

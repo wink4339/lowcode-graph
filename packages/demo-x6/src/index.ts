@@ -1,6 +1,6 @@
 import { plugins, init } from '@alilc/lowcode-engine';
 import PluginX6Designer from '@wink4339/lce-graph-x6-designer';
-import PluginMaterialsPane from '@alilc/lce-graph-materials-pane';
+import PluginMaterialsPane from '@wink4339/lce-graph-materials-pane';
 import PluginCore from '@alilc/lce-graph-core';
 import { RemoveItemPlugin, OperateButtonPlugin, UndoRedoPlugin, ZoomPlugin, logo } from '@alilc/lce-graph-tools';
 import PluginX6DesignerExtension from './plugins/x6-designer-extension';
