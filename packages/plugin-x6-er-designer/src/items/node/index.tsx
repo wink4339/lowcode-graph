@@ -65,9 +65,6 @@ class NodeComponent extends React.PureComponent<Props> {
         this.node.setPosition(newValue);
         return;
       }
-      if (options.key === 'fields') {
-        this.node.resize(192, (newValue?.length ?? 0) * 32 + (newValue && newValue.length ? 44 : 76));
-      }
 
       // 用户自定义渲染逻辑切面
       if (this.nodeDefinedType === 'shape' && onNodeRenderCb.length > 0) {

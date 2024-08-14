@@ -3,6 +3,7 @@ import React from 'react';
 import { Node as NodeModel } from '@alilc/lowcode-shell';
 import designer from '../../designer';
 import { getComponentView, updateNodeProps } from '../utils';
+import { IPublicTypePropChangeOptions } from '@alilc/lowcode-types'
 
 interface Props {
   onMountNode: (node: Node) => void;
@@ -12,8 +13,6 @@ interface Props {
   model: NodeModel;
   ctx: any;
 }
-
-
 
 /**
  * node component for x6 node render
@@ -56,13 +55,13 @@ class NodeComponent extends React.PureComponent<Props> {
     }
 
     // model 更新触发渲染
-    project.currentDocument?.onChangeNodeProp(({ key, oldValue, newValue, node }) => {
-      console.log("onChangeNodeProp", key, oldValue, newValue, node)
-      if (node.id !== model.id) {
+    project.currentDocument?.onChangeNodeProp((options: IPublicTypePropChangeOptions) => {
+      if (options.node.id !== model.id || options.key == undefined) {
         return;
       }
+      const newValue = deepClone(options.newValue)
 
-      if (key === 'position') {
+      if (options.key === 'position') {
         this.node.setPosition(newValue);
         return;
       }
@@ -73,7 +72,10 @@ class NodeComponent extends React.PureComponent<Props> {
           cb(model, this.node);
         }
       } else {
-        this.node.prop(key, newValue);
+        const kv =  getUpdateKV(options.key, newValue, options.prop)
+        if (kv !== undefined) {
+          this.node.prop(kv[0], kv[1]);
+        }
       }
     });
   }
@@ -86,6 +88,20 @@ class NodeComponent extends React.PureComponent<Props> {
   render() {
     return null;
   }
+}
+
+const deepClone = (obj: any) => {
+  if (obj === null || obj === undefined || typeof obj !== 'object') {
+    return obj
+  }
+  return JSON.parse(JSON.stringify(obj));
+};
+
+const getUpdateKV = (key: string | number, value: any, props: any) => {
+  if (props === undefined || props.path === undefined || props.path.length == 0 || key === props.path[0]) {
+    return [key, value]
+  }
+  return undefined
 }
 
 export default NodeComponent;

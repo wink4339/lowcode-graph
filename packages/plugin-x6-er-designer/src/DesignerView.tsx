@@ -1,6 +1,5 @@
 import { createElement, PureComponent } from "react";
 import { IPublicModelPluginContext } from '@alilc/lowcode-types';
-import { event } from '@alilc/lowcode-engine';
 import { Editor } from '@alilc/lowcode-editor-core';
 import { initGraph } from "./graph/initGraph";
 import Nodes from "./items";

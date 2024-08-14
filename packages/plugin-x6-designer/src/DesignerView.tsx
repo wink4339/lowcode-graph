@@ -1,5 +1,5 @@
-import { createElement, Fragment, PureComponent } from "react";
-import { ILowCodePluginContext } from '@alilc/lowcode-engine';
+import { createElement, PureComponent } from "react";
+import { IPublicModelPluginContext } from '@alilc/lowcode-types';
 import { Editor } from '@alilc/lowcode-editor-core';
 import { initGraph } from "./graph/initGraph";
 import Nodes from "./items";
@@ -10,7 +10,7 @@ import x6Designer from './designer';
 
 interface IProps {
   editor: Editor;
-  ctx: ILowCodePluginContext;
+  ctx: IPublicModelPluginContext;
 }
 
 export default class DesignerView extends PureComponent<IProps> {
@@ -58,9 +58,6 @@ export default class DesignerView extends PureComponent<IProps> {
           </div>
         </div>
       </div>
-      // <div id="design-view" className="design-view" ref={this.refContainer} >
-      //   <div id="design-view-nodes" ref={this.refNodesContainer}></div>
-      // </div>
     )
   }
 }

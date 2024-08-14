@@ -1,4 +1,4 @@
-import { IPublicModelPluginContext } from '@alilc/lowcode-types';
+import { ILowCodePluginContext, project } from '@alilc/lowcode-engine';
 import DesignerView from './DesignerView';
 import { rootState } from './items/state';
 import x6Designer, { IDesigner } from './designer';
@@ -9,13 +9,13 @@ import '@antv/x6-react-shape'; // 支持自定义 react 组件
  * @param ctx 
  * @returns 
  */
-const PluginX6Designer = (ctx: IPublicModelPluginContext) => {
+const PluginX6Designer = (ctx: ILowCodePluginContext) => {
   return {
     exports() {
       return x6Designer;
     },
     init() {
-      const { skeleton, project } = ctx;
+      const { skeleton, project, simulatorHost  } = ctx;
       skeleton.remove({
         name: 'designer',
         area: 'mainArea',
@@ -30,11 +30,14 @@ const PluginX6Designer = (ctx: IPublicModelPluginContext) => {
           ctx,
         }
       });
+
       
+
       // bind nodes state
       rootState.bindNodes(project.currentDocument);
 
       project.onChangeDocument((doc) => {
+        console.log('onChangeDocument')
         rootState.disposeDocumentEvent();
         rootState.bindNodes(project.currentDocument);
       });

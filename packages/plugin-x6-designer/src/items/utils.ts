@@ -57,6 +57,16 @@ export function getPropList(model: NodeModel) {
 export function updateNodeProps(model: NodeModel, node: Node) {
   const propList = getPropList(model) || [];
   propList.forEach(item => {
-    node.prop(item.name, item.value);
+    if (item.name === undefined) {
+      return
+    }
+    node.prop(item.name, deepClone(item.value));
   });
 }
+
+const deepClone = (obj: any) => {
+  if (obj === null || obj === undefined || typeof obj !== 'object') {
+    return obj
+  }
+  return JSON.parse(JSON.stringify(obj));
+};
