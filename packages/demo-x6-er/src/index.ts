@@ -1,7 +1,7 @@
 import { plugins, init, project } from '@alilc/lowcode-engine';
 import PluginX6ErDesigner from '@wink4339/lce-graph-x6-er-designer';
 import PluginErMaterialsPane from '@wink4339/lce-graph-er-materials-pane';
-import PluginCore from '@alilc/lce-graph-core';
+import PluginCore from '@wink4339/lce-graph-core';
 import assets from './static/assets.json';
 import schema from './static/schema.json';
 

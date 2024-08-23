@@ -35,14 +35,17 @@
     "skipLibCheck": true,
     "baseUrl": "./packages",
     "paths": {
-      "@alilc/lce-graph-core": [
+      "@wink4339/lce-graph-core": [
         "plugin-core/src"
       ],
       "@alilc/lce-graph-g6-designer": [
         "plugin-g6-designer/src"
       ],
-      "@alilc/lce-graph-x6-designer": [
+      "@wink4339/lce-graph-x6-designer": [
         "plugin-x6-designer/src"
+      ],
+      "@wink4339/lce-graph-x6-er-designer": [
+        "plugin-x6-er-designer/src"
       ],
       "@alilc/lce-graph-tools": [
         "plugin-tools/src"
@@ -50,8 +53,11 @@
       "@alilc/g-react-renderer": [
         "g-react-renderer/src"
       ],
-      "@alilc/lce-graph-materials-pane": [
+      "@wink4339/lce-graph-materials-pane": [
         "plugin-materials-pane/src"
+      ],
+      "@wink4339/lce-graph-er-materials-pane": [
+        "plugin-er-materials-pane/src"
       ],
     },
     "outDir": "lib"

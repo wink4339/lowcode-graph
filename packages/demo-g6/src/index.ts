@@ -9,7 +9,7 @@ import {
   UndoRedoPlugin
 } from '@alilc/lce-graph-tools';
 import ToolDemo from './tools/tool-demo';
-import PluginCore from '@alilc/lce-graph-core';
+import PluginCore from '@wink4339/lce-graph-core';
 import assets from './static/assets.json';
 import schema from './static/schema.json';
 
