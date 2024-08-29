@@ -1,6 +1,6 @@
-import { Graph, Shape } from '@antv/x6';
-import { project } from '@alilc/lowcode-engine';
-import x6Designer from '../designer';
+import { Graph, Shape } from '@antv/x6'
+import { project } from '@alilc/lowcode-engine'
+import x6Designer from '../designer'
 
 export function initGraph(container: HTMLElement) {
   //@ts-ignore
@@ -19,7 +19,7 @@ export function initGraph(container: HTMLElement) {
     },
     panning: {
       enabled: true,
-      eventTypes: ['mouseWheel']
+      eventTypes: ['leftMouseDown']
     },
     clipboard: false,
     snapline: true, // 对齐线
@@ -31,11 +31,14 @@ export function initGraph(container: HTMLElement) {
     },
     connecting: {
       snap: {
-        radius: 40, // 吸附阈值
+        radius: 40 // 吸附阈值
       },
-      allowBlank: false, // 不允许连接到画布空白位置的点
-      allowLoop: false, // 不允许创建循环连线
-      allowMulti: false, // 不允许在相同的起始节点和终止之间创建多条边
+      allowBlank: false,
+      // 不允许连接到画布空白位置的点
+      allowLoop: false,
+      // 不允许创建循环连线
+      allowMulti: false,
+      // 不允许在相同的起始节点和终止之间创建多条边
       allowNode: false,
       allowEdge: true,
       allowPort: true,
@@ -58,12 +61,12 @@ export function initGraph(container: HTMLElement) {
             },
           },
           zIndex: 0,
-        });
+        })
       },
       validateEdge({ edge }) {
-        const doc = project.currentDocument!;
-        const contentEdge = doc.getNodeById(edge.id);
-        console.log(edge.getSourceCellId(), edge.getTargetCellId());
+        const doc = project.currentDocument!
+        const contentEdge = doc.getNodeById(edge.id)
+        console.log(edge.getSourceCellId(), edge.getTargetCellId())
         if (!contentEdge) {
           const node = doc.createNode({
             componentName: 'Line',
@@ -75,26 +78,26 @@ export function initGraph(container: HTMLElement) {
               sourcePortId: edge.getSourcePortId(),
               targetPortId: edge.getTargetPortId()
             },
-          });
-          const rootNode = project.currentDocument?.root;
-          project.currentDocument?.insertNode(rootNode!, node);
+          })
+          const rootNode = project.currentDocument?.root
+          project.currentDocument?.insertNode(rootNode!, node)
         } else {
-          contentEdge.setPropValue('source', edge.getSourceCellId());
-          contentEdge.setPropValue('target', edge.getTargetCellId());
-          contentEdge.setPropValue('sourcePortId', edge.getSourcePortId());
-          contentEdge.setPropValue('targetPortId', edge.getTargetPortId());
+          contentEdge.setPropValue('source', edge.getSourceCellId())
+          contentEdge.setPropValue('target', edge.getTargetCellId())
+          contentEdge.setPropValue('sourcePortId', edge.getSourcePortId())
+          contentEdge.setPropValue('targetPortId', edge.getTargetPortId())
         }
 
-        return false;
+        return false
       },
     },
     onEdgeLabelRendered(args) {
-      const onEdgeLabelRenderCb = x6Designer.onEdgeLabelRender();
+      const onEdgeLabelRenderCb = x6Designer.onEdgeLabelRender()
       for (const cb of onEdgeLabelRenderCb) {
-        cb(args);
+        cb(args)
       }
     }
-  });
+  })
 
   // 适应画布
   const getContainerSize = () => {
@@ -103,18 +106,18 @@ export function initGraph(container: HTMLElement) {
     return {
       width: width,
       height: height,
-    };
-  };
+    }
+  }
   const resizeFn = () => {
-    const { width, height } = getContainerSize();
-    graph.resize(width, height);
-  };
-  window.addEventListener('resize', resizeFn);
+    const { width, height } = getContainerSize()
+    graph.resize(width, height)
+  }
+  window.addEventListener('resize', resizeFn)
 
   // 画布内容居中
   requestAnimationFrame(() => {
-    resizeFn();
-    graph.centerContent();
-  });
-  return graph;
+    resizeFn()
+    graph.translate(0, 0)
+  })
+  return graph
 }

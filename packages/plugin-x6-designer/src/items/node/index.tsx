@@ -1,92 +1,92 @@
-import { Graph, Node } from '@antv/x6';
-import React from 'react';
-import { Node as NodeModel } from '@alilc/lowcode-shell';
-import designer from '../../designer';
-import { getComponentView, updateNodeProps } from '../utils';
+import { Graph, Node } from '@antv/x6'
+import React from 'react'
+import { Node as NodeModel } from '@alilc/lowcode-shell'
+import designer from '../../designer'
+import { getComponentView, updateNodeProps } from '../utils'
 import { IPublicTypePropChangeOptions } from '@alilc/lowcode-types'
 
 interface Props {
-  onMountNode: (node: Node) => void;
-  onUnMountNode: (node: Node) => void;
+  onMountNode: (node: Node) => void
+  onUnMountNode: (node: Node) => void
 
-  graph: typeof Graph;
-  model: NodeModel;
-  ctx: any;
+  graph: Graph
+  model: NodeModel
+  ctx: any
 }
 
 /**
  * node component for x6 node render
  */
 class NodeComponent extends React.PureComponent<Props> {
-  private node: Node;
+  private node: Node
   // 节点区分是否有自定义html渲染
-  private nodeDefinedType: 'shape' | 'component';
+  private nodeDefinedType: 'shape' | 'component'
 
   componentDidMount() {
     // 添加节点
-    const { model, graph, ctx } = this.props;
-    const { project } = ctx;
-    const view = getComponentView(model);
-    this.nodeDefinedType = view?.component ? 'component' : 'shape';
+    const { model, graph, ctx } = this.props
+    const { project } = ctx
+    const view = getComponentView(model)
+    this.nodeDefinedType = view?.component ? 'component' : 'shape'
     // 基于 Schema 数据恢复节点，保持 id 和 ports 一致
     this.node = graph.createNode({
       id: model.id,
       ports: model.propsData.ports,
       ...view
-    });
+    })
 
     // 收集 node 统一添加到画布
-    this.props.onMountNode(this.node);
+    this.props.onMountNode(this.node)
 
     // @ts-ignore
-    const { position } = model.propsData;
+    const { position } = model.propsData
     // 定位
-    this.node.setPosition(position);
+    this.node.setPosition(position)
     // 加载自定义节点渲染逻辑
-    const onNodeRenderCb = designer.onNodeRender();
+    const onNodeRenderCb = designer.onNodeRender()
 
     // 用户自定义渲染逻辑切面
     if (this.nodeDefinedType === 'shape' && onNodeRenderCb.length > 0) {
       for (const cb of onNodeRenderCb) {
-        cb(model, this.node);
+        cb(model, this.node)
       }
     } else {
-      updateNodeProps(model, this.node);
+      updateNodeProps(model, this.node)
     }
 
     // model 更新触发渲染
     project.currentDocument?.onChangeNodeProp((options: IPublicTypePropChangeOptions) => {
       if (options.node.id !== model.id || options.key == undefined) {
-        return;
+        return
       }
       const newValue = deepClone(options.newValue)
 
       if (options.key === 'position') {
-        this.node.setPosition(newValue);
-        return;
+        this.node.setPosition(newValue)
+        return
       }
 
       // 用户自定义渲染逻辑切面
       if (this.nodeDefinedType === 'shape' && onNodeRenderCb.length > 0) {
         for (const cb of onNodeRenderCb) {
-          cb(model, this.node);
+          cb(model, this.node)
         }
       } else {
         const kv =  getUpdateKV(options.key, newValue, options.prop)
         if (kv !== undefined) {
-          this.node.prop(kv[0], kv[1]);
+          this.node.prop(kv[0], kv[1])
         }
       }
-    });
+    })
   }
 
   componentWillUnmount() {
     // 删除节点
-    this.props.onUnMountNode(this.node);
+    this.props.onUnMountNode(this.node)
   }
 
   render() {
-    return null;
+    return null
   }
 }
 
@@ -94,8 +94,8 @@ const deepClone = (obj: any) => {
   if (obj === null || obj === undefined || typeof obj !== 'object') {
     return obj
   }
-  return JSON.parse(JSON.stringify(obj));
-};
+  return JSON.parse(JSON.stringify(obj))
+}
 
 const getUpdateKV = (key: string | number, value: any, props: any) => {
   if (props === undefined || props.path === undefined || props.path.length == 0 || key === props.path[0]) {
@@ -104,5 +104,5 @@ const getUpdateKV = (key: string | number, value: any, props: any) => {
   return undefined
 }
 
-export default NodeComponent;
+export default NodeComponent
 

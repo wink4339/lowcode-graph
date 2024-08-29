@@ -1,50 +1,62 @@
-import { ILowCodePluginContext, project } from '@alilc/lowcode-engine';
-import DesignerView from './DesignerView';
-import { rootState } from './items/state';
-import x6Designer, { IDesigner } from './designer';
-import '@antv/x6-react-shape'; // 支持自定义 react 组件
+import { IPublicModelPluginContext } from '@alilc/lowcode-types'
+import DesignerView from './DesignerView'
+import { RootState } from './items/state'
+import x6Designer, { IDesigner } from './designer'
+import '@antv/x6-react-shape'
+import { uuid } from '@antv/x6/lib/util/string/uuid'
 
 /**
  * plugin X6 designer
  * @param ctx 
  * @returns 
  */
-const PluginX6Designer = (ctx: ILowCodePluginContext) => {
+const PluginX6Designer = (ctx: IPublicModelPluginContext, options: any) => {
+  var id = options?.id || ''
+  var rootState = new RootState()
   return {
     exports() {
-      return x6Designer;
+      return x6Designer
     },
     init() {
-      const { skeleton, project, simulatorHost  } = ctx;
+      const { skeleton, project } = ctx
       skeleton.remove({
         name: 'designer',
         area: 'mainArea',
         type: 'Widget'
-      });
+      })
       skeleton.add({
         area: 'mainArea',
         name: 'designer',
         type: 'Widget',
         content: DesignerView,
         contentProps: {
-          ctx,
+          ctx: ctx,
+          id: id || uuid(),
+          rootState: rootState
         }
-      });
-
-      
+      })
 
       // bind nodes state
-      rootState.bindNodes(project.currentDocument);
+      rootState.bindNodes(project.currentDocument)
 
-      project.onChangeDocument((doc) => {
-        console.log('onChangeDocument')
-        rootState.disposeDocumentEvent();
-        rootState.bindNodes(project.currentDocument);
-      });
+      project.onChangeDocument(() => {
+        rootState.disposeDocumentEvent()
+        rootState.bindNodes(project.currentDocument)
+      })
     }
   }
 }
 
-PluginX6Designer.pluginName = 'plugin-x6-designer';
-export default PluginX6Designer;
-export { IDesigner };
+PluginX6Designer.pluginName = 'plugin-x6-designer'
+PluginX6Designer.meta = {
+  preferenceDeclaration: {
+    title: '参数定义',
+    properties: [{
+      key: 'id',
+      type: 'string',
+      description: '唯一id(默认uuid)'
+    }]
+  }
+}
+export default PluginX6Designer
+export { IDesigner }
