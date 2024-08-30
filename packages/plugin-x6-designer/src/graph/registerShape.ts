@@ -9,7 +9,6 @@ function registerNode(nodeName: string, node: any) {
   Graph.registerNode(nodeName, node);
 }
 
-
 export function registerConnector() {
   Graph.registerConnector(
     'algo-connector',

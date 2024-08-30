@@ -1,13 +1,16 @@
-import React from 'react';
-import { observer } from 'mobx-react';
-import NodeComponent from './node';
-import EdgeComponent from './edge';
-import { Node, Edge, Graph } from '@antv/x6';
-import { EdgeComponentName, rootState, RootState } from "./state";
-import './index.less';
+import React from 'react'
+import { observer } from 'mobx-react'
+import { IPublicModelPluginContext } from '@alilc/lowcode-types'
+import NodeComponent from './node'
+import EdgeComponent from './edge'
+import { Node, Edge, Graph } from '@antv/x6'
+import { RootState } from "./state"
+import './index.less'
 
 interface Props {
-  graph: Graph;
+  graph: Graph
+  rootState: RootState
+  ctx: IPublicModelPluginContext
 }
 
 /**
@@ -16,58 +19,58 @@ interface Props {
  */
 @observer
 class Nodes extends React.PureComponent<Props> {
-  nodes: Node[] = [];
-  edges: Edge[] = [];
-  mounted: boolean = false; // 是否 didMounted
+  nodes: Node[] = []
+  edges: Edge[] = []
+  mounted: boolean = false // 是否 didMounted
 
   componentDidMount() {
-    const { graph } = this.props;
-    graph.resetCells([...this.nodes, ...this.edges]);
-    this.mounted = true;
+    const { graph } = this.props
+    graph.resetCells([...this.nodes, ...this.edges])
+    this.mounted = true
   }
 
   onMountEdge = (edge: Edge) => {
-    const { graph } = this.props;
-    this.edges.push(edge);
+    const { graph } = this.props
+    this.edges.push(edge)
 
     if (this.mounted) {
-      graph.addEdge(edge);
+      graph.addEdge(edge)
     }
   }
 
   onMountNode = (node: Node) => {
-    const { graph } = this.props;
-    this.nodes.push(node);
+    const { graph } = this.props
+    this.nodes.push(node)
 
     if (this.mounted) {
-      graph.addNode(node);
+      graph.addNode(node)
     }
   }
 
   onUnMountNode = (node: Node) => {
-    const { graph } = this.props;
-    const index = this.nodes.indexOf(node);
-    this.nodes.splice(index, 1);
+    const { graph } = this.props
+    const index = this.nodes.indexOf(node)
+    this.nodes.splice(index, 1)
 
     if (this.mounted) {
-      graph.removeCell(node);
+      graph.removeCell(node)
     }
   }
 
   onUnMountEdge = (edge: Edge) => {
-    const { graph } = this.props;
-    const index = this.edges.indexOf(edge);
-    this.edges.splice(index, 1);
+    const { graph } = this.props
+    const index = this.edges.indexOf(edge)
+    this.edges.splice(index, 1)
 
     if (this.mounted) {
-      graph.removeCell(edge);
+      graph.removeCell(edge)
     }
   }
 
   render() {
-    const { graph } = this.props;
-    const nodes = rootState.getNodes();
-    const items = nodes.filter(v => typeof v.isPage === 'function' ? !v.isPage() : !v.isPage);
+    const { graph, rootState } = this.props
+    const nodes = rootState.getNodes()
+    const items = nodes.filter(v => typeof v.isPage === 'function' ? !v.isPage() : !v.isPage)
     return (
       <div className="editor-graph">
         {
@@ -101,4 +104,4 @@ class Nodes extends React.PureComponent<Props> {
   }
 }
 
-export default Nodes;
+export default Nodes

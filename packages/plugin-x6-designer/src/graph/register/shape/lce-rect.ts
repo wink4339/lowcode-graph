@@ -1,4 +1,4 @@
-import { portR, BlueColor, strokeWidth } from "./const";
+import { portR, BlueColor, strokeWidth } from "./const"
 
 export const LceRect = {
   inherit: 'rect',

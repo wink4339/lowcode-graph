@@ -1,4 +1,4 @@
-import { BlueColor, DeepBlueColor, portR, strokeWidth } from "./const";
+import { BlueColor, DeepBlueColor, portR, strokeWidth } from "./const"
 
 export const LceDiamond = {
   inherit: 'polygon',

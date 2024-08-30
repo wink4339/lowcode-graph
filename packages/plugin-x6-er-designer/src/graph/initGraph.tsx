@@ -1,6 +1,7 @@
-import { Graph, Shape } from '@antv/x6';
-import { project } from '@alilc/lowcode-engine';
-import x6Designer from '../designer';
+import { Graph, Shape } from '@antv/x6'
+import { project } from '@alilc/lowcode-engine'
+import x6Designer from '../designer'
+import { getShortBothPort } from './util'
 
 export function initGraph(container: HTMLElement) {
   //@ts-ignore
@@ -19,7 +20,7 @@ export function initGraph(container: HTMLElement) {
     },
     panning: {
       enabled: true,
-      eventTypes: ['mouseWheel']
+      eventTypes: ['leftMouseDown']
     },
     clipboard: false,
     snapline: true, // 对齐线
@@ -31,70 +32,78 @@ export function initGraph(container: HTMLElement) {
     },
     connecting: {
       snap: {
-        radius: 40, // 吸附阈值
+        radius: 40 // 吸附阈值
       },
-      allowBlank: false, // 不允许连接到画布空白位置的点
-      allowLoop: false, // 不允许创建循环连线
-      allowMulti: false, // 不允许在相同的起始节点和终止之间创建多条边
+      allowBlank: false,
+      // 不允许连接到画布空白位置的点
+      allowLoop: false,
+      // 不允许创建循环连线
+      allowMulti: true,
+      // 不允许在相同的起始节点和终止之间创建多条边
       allowNode: false,
       allowEdge: true,
       allowPort: true,
       highlight: true,
-      connector: 'algo-connector',
+      connector: "rounded",
+      router: {
+        name: 'er'
+      },
       createEdge() {
         // 创建新边
         return new Shape.Edge({
           attrs: {
             line: {
-              strokeDasharray: '5 5',
-              stroke: '#4C6079',
-              strokeOpacity: 0.5,
+              stroke: '#657c99',
               strokeWidth: 1,
               targetMarker: {
-                // 箭头
                 name: 'block',
-                size: 8,
-              },
-            },
-          },
-          zIndex: 0,
-        });
+                size: 8
+              }
+            }
+          }
+        })
       },
       validateEdge({ edge }) {
-        const doc = project.currentDocument!;
-        const contentEdge = doc.getNodeById(edge.id);
-        console.log(edge.getSourceCellId(), edge.getTargetCellId());
+        const doc = project.currentDocument!
+        const contentEdge = doc.getNodeById(edge.id)
+        var sourceCell = edge.getSourceCell()
+        var targetCell = edge.getTargetCell()
+
+        const bothPort = getShortBothPort(sourceCell, targetCell)
+        if (bothPort == null) return false
+        const [sourcePort, targetPort] = bothPort as any
+
         if (!contentEdge) {
-          const node = doc.createNode({
+          var node = doc.createNode({
             componentName: 'Line',
             title: '线',
             props: {
               name: '线',
               source: edge.getSourceCellId(),
               target: edge.getTargetCellId(),
-              sourcePortId: edge.getSourcePortId(),
-              targetPortId: edge.getTargetPortId()
-            },
-          });
-          const rootNode = project.currentDocument?.root;
-          project.currentDocument?.insertNode(rootNode!, node);
+              sourcePortId: sourcePort.id,
+              targetPortId: targetPort.id
+            }
+          })
+          const rootNode = project.currentDocument?.root
+          project.currentDocument?.insertNode(rootNode!, node)
         } else {
-          contentEdge.setPropValue('source', edge.getSourceCellId());
-          contentEdge.setPropValue('target', edge.getTargetCellId());
-          contentEdge.setPropValue('sourcePortId', edge.getSourcePortId());
-          contentEdge.setPropValue('targetPortId', edge.getTargetPortId());
+          contentEdge.setPropValue('source', edge.getSourceCellId())
+          contentEdge.setPropValue('target', edge.getTargetCellId())
+          contentEdge.setPropValue('sourcePortId', sourcePort.id)
+          contentEdge.setPropValue('targetPortId', targetPort.id)
         }
 
-        return false;
+        return false
       },
     },
     onEdgeLabelRendered(args) {
-      const onEdgeLabelRenderCb = x6Designer.onEdgeLabelRender();
+      const onEdgeLabelRenderCb = x6Designer.onEdgeLabelRender()
       for (const cb of onEdgeLabelRenderCb) {
-        cb(args);
+        cb(args)
       }
     }
-  });
+  })
 
   // 适应画布
   const getContainerSize = () => {
@@ -103,18 +112,18 @@ export function initGraph(container: HTMLElement) {
     return {
       width: width,
       height: height,
-    };
-  };
+    }
+  }
   const resizeFn = () => {
-    const { width, height } = getContainerSize();
-    graph.resize(width, height);
-  };
-  window.addEventListener('resize', resizeFn);
+    const { width, height } = getContainerSize()
+    graph.resize(width, height)
+  }
+  window.addEventListener('resize', resizeFn)
 
   // 画布内容居中
   requestAnimationFrame(() => {
-    resizeFn();
-    graph.centerContent();
-  });
-  return graph;
+    resizeFn()
+    graph.translate(0, 0)
+  })
+  return graph
 }

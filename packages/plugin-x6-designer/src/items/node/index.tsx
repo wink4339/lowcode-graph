@@ -2,7 +2,7 @@ import { Graph, Node } from '@antv/x6'
 import React from 'react'
 import { Node as NodeModel } from '@alilc/lowcode-shell'
 import designer from '../../designer'
-import { getComponentView, updateNodeProps } from '../utils'
+import { deepClone, getComponentView, updateNodeProps } from '../utils'
 import { IPublicTypePropChangeOptions } from '@alilc/lowcode-types'
 
 interface Props {
@@ -88,13 +88,6 @@ class NodeComponent extends React.PureComponent<Props> {
   render() {
     return null
   }
-}
-
-const deepClone = (obj: any) => {
-  if (obj === null || obj === undefined || typeof obj !== 'object') {
-    return obj
-  }
-  return JSON.parse(JSON.stringify(obj))
 }
 
 const getUpdateKV = (key: string | number, value: any, props: any) => {
