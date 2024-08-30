@@ -11,7 +11,7 @@
       "props": {
         "name": "实体",
         "position": {
-          "x": 0,
+          "x": 100,
           "y": 200
         },
         "fields": [
