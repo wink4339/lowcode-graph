@@ -1,9 +1,9 @@
 import { IPublicModelPluginContext } from '@alilc/lowcode-types'
-import DesignerView from './DesignerView'
 import { RootState } from './items/state'
-import x6Designer, { IDesigner } from './designer'
-import '@antv/x6-react-shape' // 支持自定义 react 组件
 import { uuid } from '@antv/x6/lib/util/string/uuid'
+import '@antv/x6-react-shape' // 支持自定义 react 组件
+import { Designer } from './designer/designer'
+import { DesignerView } from './designer/designer-view'
 
 /**
  * plugin X6 designer
@@ -11,28 +11,30 @@ import { uuid } from '@antv/x6/lib/util/string/uuid'
  * @returns 
  */
 const PluginX6Designer = (ctx: IPublicModelPluginContext, options: any) => {
-  var id = options?.id || ''
-  var rootState = new RootState()
+  const id = options?.id || uuid()
+  const designer = new Designer()
+  const rootState = new RootState()
   return {
     exports() {
-      return x6Designer
+      return designer
     },
     init() {
-      const { skeleton, project } = ctx
+      const { skeleton, project, config } = ctx
       skeleton.remove({
         name: 'designer',
         area: 'mainArea',
         type: 'Widget'
       })
       skeleton.add({
-        area: 'mainArea',
         name: 'designer',
+        area: 'mainArea',
         type: 'Widget',
         content: DesignerView,
         contentProps: {
           ctx,
-          id: id || uuid(),
-          rootState: rootState
+          id,
+          designer,
+          rootState,
         }
       })
 
@@ -59,4 +61,3 @@ PluginX6Designer.meta = {
   }
 }
 export default PluginX6Designer
-export { IDesigner }

@@ -4,6 +4,7 @@ import PluginErMaterialsPane from '@wink4339/lce-graph-er-materials-pane';
 import PluginCore from '@wink4339/lce-graph-core';
 import assets from './static/assets.json';
 import schema from './static/schema.json';
+import appHelper from './appHelper';
 
 async function registerPlugins() {
   await plugins.register(PluginCore, {
@@ -16,17 +17,13 @@ async function registerPlugins() {
 
 (async function main() {
   await registerPlugins();
-  init()
-  // init(document.getElementById('lce-container')!, {
-  //   locale: 'zh-CN',
-  //   enableCondition: true,
-  //   enableCanvasLock: true,
-  //   // 默认绑定变量
-  //   supportVariableGlobally: true,
-  //   requestHandlersMap: {
-  //     fetch: createFetchHandler(),
-  //   },
-  //   appHelper,
-  //   enableContextMenu: true,
-  // });
+  init(undefined, {
+    locale: 'zh-CN',
+    enableCondition: true,
+    enableCanvasLock: true,
+    // 默认绑定变量
+    supportVariableGlobally: true,
+    appHelper,
+    enableContextMenu: true,
+  });
 })();

@@ -2,25 +2,28 @@ import { Graph, Edge } from '@antv/x6';
 import React from 'react';
 import { Node as NodeModel } from '@alilc/lowcode-shell';
 import { getComponentView, updateNodeProps } from '../utils';
-import designer from '../../designer';
+import { Designer } from '../../designer/designer';
+import { IPublicTypePropChangeOptions } from '@alilc/lowcode-types';
 
 interface Props {
   onMountEdge: (edge: Edge) => void;
   onUnMountEdge: (edge: Edge) => void;
 
+  pageCtx: any,
   graph: Graph;
   model: NodeModel;
   ctx: any;
+  designer: Designer
 }
 
 /**
  * edge component for x6 edge render
  */
 class EdgeComponent extends React.PureComponent<Props> {
-  private edge: Edge;
+  private edge!: Edge;
 
   componentDidMount() {
-    const { model, graph, ctx } = this.props;
+    const { pageCtx, model, graph, ctx } = this.props;
     const { project } = ctx;
 
     // 创建 edge
@@ -42,24 +45,24 @@ class EdgeComponent extends React.PureComponent<Props> {
     this.edge.setTarget({ cell: target });
 
     // 渲染逻辑切面
-    const onEdgeRender = designer.onEdgeRender();
+    const onEdgeRender = this.props.designer.onEdgeRender();
     // 渲染逻辑切面
     for (const cb of onEdgeRender) {
       cb(model, this.edge);
     }
 
     // model 更新渲染
-    project.currentDocument?.onChangeNodeProp(({ key, oldValue, newValue, node }) => {
-      if (node.id !== model.id) {
-        return;
+    project.currentDocument?.onChangeNodeProp((options: IPublicTypePropChangeOptions) => {
+      if (options.node.id !== model.id || options.key == undefined) {
+        return
       }
 
-      if (key === 'source') {
-        this.edge.setSource({ cell: newValue });
+      if (options.key === 'source') {
+        this.edge.setSource({ cell: options.newValue });
       }
 
-      if (key === 'target') {
-        this.edge.setTarget({ cell: newValue });
+      if (options.key === 'target') {
+        this.edge.setTarget({ cell: options.newValue });
       }
 
       // 用户自定义渲染逻辑切面

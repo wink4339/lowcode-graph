@@ -5,6 +5,7 @@ import { showPorts, getShortBothPort } from './util'
 export const NormalStrokeColor = '#4C6079'
 export const SelectedStrokeColor = '#4e7ff7'
 export const NormalNotEdgeStrokeColor = '#ffffff' 
+const defaultEventName = "onCommandEvent"
 
 // 初始化画布事件
 export function initEvents(graph: Graph) {
@@ -14,9 +15,32 @@ export function initEvents(graph: Graph) {
 
   // 增加 node:added 事件，将 ports 数据更新到 schema 中，便于保存
   graph.on('node:added',({ node, index, options }) => {
-    const nodeModel = project.currentDocument?.getNodeById(node.id) as any as Model
+    const nodeModel = project.currentDocument?.getNodeById(node.id) as any
     if (nodeModel) {
-      nodeModel.setPropValue('ports', node.getPorts())
+      if (nodeModel) {
+        nodeModel.setPropValue('ports', node.getPorts())
+        const events = nodeModel.propsData['__events'] || { eventDataList: [], eventList: []}
+        if (!events.eventList.some((e: any) => e.name === defaultEventName)) {
+          events.eventDataList.push({
+            type: 'componentEvent',
+            name: defaultEventName,
+            relatedEventName: defaultEventName
+          })
+          events.eventList.push({
+            name: defaultEventName,
+            propType: 'func',
+            disabled: true
+          })
+          nodeModel.setPropValue('__events', events)
+        }
+        
+        if (!nodeModel.propsData[defaultEventName]) {
+          nodeModel.setPropValue(defaultEventName, {
+            type: 'JSFunction',
+            value: `function(){return this.${defaultEventName}.apply(this,Array.prototype.slice.call(arguments).concat([])) }`,
+          })
+        }
+      }
     }
   })
 
