@@ -3,7 +3,9 @@ import { Graph, Cell } from '@antv/x6'
 import { showPorts, getShortBothPort } from './util'
 
 export const NormalStrokeColor = '#4C6079'
-export const SelectedStrokeColor = '#4e7ff7'
+export const SelectedColor = '#4e7ff7'
+export const HoverColor = '#dddfe6'
+export const TransparentColor = 'transparent'
 export const NormalNotEdgeStrokeColor = '#ffffff' 
 const defaultEventName = "onCommandEvent"
 
@@ -17,29 +19,27 @@ export function initEvents(graph: Graph) {
   graph.on('node:added',({ node, index, options }) => {
     const nodeModel = project.currentDocument?.getNodeById(node.id) as any
     if (nodeModel) {
-      if (nodeModel) {
-        nodeModel.setPropValue('ports', node.getPorts())
-        const events = nodeModel.propsData['__events'] || { eventDataList: [], eventList: []}
-        if (!events.eventList.some((e: any) => e.name === defaultEventName)) {
-          events.eventDataList.push({
-            type: 'componentEvent',
-            name: defaultEventName,
-            relatedEventName: defaultEventName
-          })
-          events.eventList.push({
-            name: defaultEventName,
-            propType: 'func',
-            disabled: true
-          })
-          nodeModel.setPropValue('__events', events)
-        }
-        
-        if (!nodeModel.propsData[defaultEventName]) {
-          nodeModel.setPropValue(defaultEventName, {
-            type: 'JSFunction',
-            value: `function(){return this.${defaultEventName}.apply(this,Array.prototype.slice.call(arguments).concat([])) }`,
-          })
-        }
+      nodeModel.setPropValue('ports', node.getPorts())
+      const events = nodeModel.propsData['__events'] || { eventDataList: [], eventList: []}
+      if (!events.eventList.some((e: any) => e.name === defaultEventName)) {
+        events.eventDataList.push({
+          type: 'componentEvent',
+          name: defaultEventName,
+          relatedEventName: defaultEventName
+        })
+        events.eventList.push({
+          name: defaultEventName,
+          propType: 'func',
+          disabled: true
+        })
+        nodeModel.setPropValue('__events', events)
+      }
+      
+      if (!nodeModel.propsData[defaultEventName]) {
+        nodeModel.setPropValue(defaultEventName, {
+          type: 'JSFunction',
+          value: `function(){return this.${defaultEventName}.apply(this,Array.prototype.slice.call(arguments).concat([])) }`,
+        })
       }
     }
   })
@@ -71,7 +71,7 @@ export function initEvents(graph: Graph) {
 
     selected.forEach(cell => {
       if (cell.isEdge()) {
-        cell.attr('line/stroke', SelectedStrokeColor)
+        cell.attr('line/stroke', SelectedColor)
         cell.toFront()
         var sourceNode = cell.getSourceCell()
         if (sourceNode) {
@@ -89,10 +89,8 @@ export function initEvents(graph: Graph) {
         cell.attr('line/stroke', NormalStrokeColor)
         cell.toBack()
       } else {
-        var nodeModel = project.currentDocument?.getNodeById(cell.id)
-        if (nodeModel) {
-          nodeModel.setPropValue('focused', false)
-        }
+        cell.prop('focused', false)
+        cell.attr('body/stroke', TransparentColor)
       }
     })
   })
@@ -118,9 +116,11 @@ export function initEvents(graph: Graph) {
   // 鼠标按下（节点）
   graph.on('node:mousedown', function ({cell}) {
     graph.cleanSelection()
-    const nodeModel = project.currentDocument?.getNodeById(cell.id)
-    if (nodeModel) {
-      nodeModel.setPropValue('focused', true)
+    cell.prop('focused', true)
+    cell.attr('body/stroke', SelectedColor)
+    const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>
+    if (ports) {
+      showPorts(ports, true)
     }
     cell.toFront()
   })
@@ -132,14 +132,23 @@ export function initEvents(graph: Graph) {
 
   // 鼠标移入（节点）
   graph.on('node:mouseenter', function ({cell}) {
+    if (!graph.isSelected(cell)) {
+      cell.attr('body/stroke', HoverColor)
+    }
+
     const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>
     if (ports) {
       showPorts(ports, true)
     }
+    
   })
 
   // 鼠标移出（节点）
   graph.on('node:mouseleave', function ({cell}) {
+    if (!graph.isSelected(cell)) {
+      cell.attr('body/stroke', TransparentColor)
+    }
+
     const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>
     if (ports) {
       showPorts(ports, false)
@@ -148,6 +157,6 @@ export function initEvents(graph: Graph) {
 
   // 鼠标按下（边）
   graph.on('edge:mousedown', function ({cell}) {
-    cell.attr('line/stroke', SelectedStrokeColor)
+    cell.attr('line/stroke', SelectedColor)
   })
 }

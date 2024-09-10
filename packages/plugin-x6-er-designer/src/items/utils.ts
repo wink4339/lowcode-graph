@@ -34,9 +34,9 @@ export const getComponentView = (nodeModel: NodeModel) => {
 
 export function getPropList(model: NodeModel) {
   const propsData = model.propsData || {}
-
-  let propsList = []
+  const propsList = []
   for(let k in propsData) {
+    if (k === "position" || k === "ports") continue
     // @ts-ignore
     propsList.push({name: k, value: propsData[k]})
   }
@@ -56,7 +56,6 @@ export function updateNodeProps(model: NodeModel, node: Node, pageCtx: any) {
     if (value && (isJSExpression(value) || isJSFunction(value))) {
       value = parseExpression(value, pageCtx);
     }
-    console.log("value: ", value)
     node.prop(item.name, value)
   })
 }
