@@ -1,13 +1,16 @@
 import { createElement, PureComponent, createRef } from "react"
 import { IPublicEnumTransformStage, IPublicModelPluginContext, IPublicTypeDisposable } from '@alilc/lowcode-types'
 import { Editor } from '@alilc/lowcode-editor-core'
-import { workspace } from '@alilc/lowcode-engine'
+import { workspace, event } from '@alilc/lowcode-engine'
 import { render } from "react-dom"
+import { Balloon } from '@alifd/next';
 import { initGraph } from "../graph/initGraph"
 import { initEvents } from "../graph/initEvents"
 import { RootState } from "../items/state"
 import PageRender from "../renderer/page"
 import "./designer.scss"
+
+const Tooltip = Balloon.Tooltip
 
 interface IProps {
   editor: Editor
@@ -104,6 +107,11 @@ export class DesignerView extends PureComponent<IProps, IState> {
         appHelper: data || {}
       }))
     })
+    event.on(`common:x6ErMaterials:${this.props.id}`, this.bindEvent)
+  }
+
+  bindEvent = (params: any) => {
+    console.log("监听: ", params)
   }
 
   componentWillUnmount() {
@@ -111,6 +119,7 @@ export class DesignerView extends PureComponent<IProps, IState> {
     this.changeDocumentDispose?.()
     this.changeStateDispose?.()
     this.changeConfigAppHelperDispose?.()
+    event.off(`common:x6ErMaterials:${this.props.id}`, this.bindEvent)
   }
 
   render() {
@@ -121,8 +130,12 @@ export class DesignerView extends PureComponent<IProps, IState> {
         <div className="lc-project">
           <div className="lc-simulator-canvas lc-simulator-device-default">
             <div className="design-view-undo-redo-wrapper">
-              <span className={undo ? '' : 'diabled'} aria-haspopup="true" aria-expanded="false" onClick={this.handleUndoClick}></span>
-              <span className={redo ? '' : 'diabled'} aria-haspopup="true" aria-expanded="false" onClick={this.handleRedoClick}></span>
+              <Tooltip v2 trigger={<span className={undo ? 'undo' : 'undo diabled'}  onClick={this.handleUndoClick} />} align="b">
+                  撤销
+              </Tooltip>
+              <Tooltip v2 trigger={<span className={redo ? 'redo' : 'redo diabled'} onClick={this.handleRedoClick} />} align="b">
+                  恢复
+              </Tooltip>
             </div>
             <div id={`design-view-${id}`} ref={this.refContainer} >
               <div id={`design-view-nodes-${id}`} ref={this.refNodesContainer}>

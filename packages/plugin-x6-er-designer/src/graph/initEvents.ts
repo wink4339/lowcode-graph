@@ -7,7 +7,7 @@ export const SelectedColor = '#4e7ff7'
 export const HoverColor = '#dddfe6'
 export const TransparentColor = 'transparent'
 export const NormalNotEdgeStrokeColor = '#ffffff' 
-const defaultEventName = "onCommandEvent"
+const defaultEventName = "getEngineEvent"
 
 // 初始化画布事件
 export function initEvents(graph: Graph) {

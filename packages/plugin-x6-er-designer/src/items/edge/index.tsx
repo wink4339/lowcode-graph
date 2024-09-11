@@ -23,12 +23,13 @@ class EdgeComponent extends React.PureComponent<Props> {
   private edge!: Edge;
 
   componentDidMount() {
-    const { pageCtx, model, graph, ctx } = this.props;
+    const { pageCtx, model, graph, ctx, designer } = this.props;
     const { project } = ctx;
 
     // 创建 edge
     const view = getComponentView(model);
     this.edge = graph.createEdge({
+      designerId: designer.getId(),
       id: model.id,
       ...view
     });

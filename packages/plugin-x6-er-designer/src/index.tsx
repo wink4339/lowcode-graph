@@ -12,7 +12,7 @@ import { DesignerView } from './designer/designer-view'
  */
 const PluginX6Designer = (ctx: IPublicModelPluginContext, options: any) => {
   const id = options?.id || uuid()
-  const designer = new Designer()
+  const designer = new Designer(id)
   const rootState = new RootState()
   return {
     exports() {

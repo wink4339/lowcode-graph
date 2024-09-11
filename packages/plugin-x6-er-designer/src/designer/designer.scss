@@ -29,16 +29,16 @@
         justify-content: center;
     }
 
-    span:last-child {
-        transform: rotateY(180deg);
-    }
-
-    span:before {
+    .undo:before, .redo:before {
         content: "";
         display: block;
         width: 14px;
         height: 13px;
         background-image: url(https://img.yunxy.top/imgextra/undo-redo.png);
         background-size: 14px 13px;
+    }
+
+    .redo {
+        transform: rotateY(180deg);
     }
 }

@@ -29,12 +29,13 @@ class NodeComponent extends React.PureComponent<Props> {
 
   componentDidMount() {
     // 添加节点
-    const { pageCtx, model, graph, ctx } = this.props
+    const { pageCtx, model, graph, ctx, designer } = this.props
     const { project } = ctx
     const view = getComponentView(model)
     this.nodeDefinedType = view?.component ? 'component' : 'shape'
     // 基于 Schema 数据恢复节点，保持 id 和 ports 一致
     this.node = graph.createNode({
+      designerId: designer.getId(),
       id: model.id,
       ports: model.propsData.ports,
       ...view,

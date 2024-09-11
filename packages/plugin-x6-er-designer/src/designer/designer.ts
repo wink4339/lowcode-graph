@@ -14,7 +14,10 @@ export interface IDesigner {
  * designer 统一导出 api
  */
 export class Designer implements IDesigner {
-  constructor() {
+  private id: string
+  
+  constructor(id: string) {
+    this.id = id
     this.commandManager = new CommandManager({
       [EditorCommand.ZoomIn]: zoomIn,
       [EditorCommand.ZoomOut]: zoomOut,
@@ -61,9 +64,11 @@ export class Designer implements IDesigner {
     return this.graph
   }
 
+  getId() {
+    return this.id
+  }
+
   public registerCommand = (key: string, listener: ICommandCb) => {
     this.commandManager.register(key, listener)
   }
 }
-
-const a = new Designer()

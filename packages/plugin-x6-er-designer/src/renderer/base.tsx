@@ -1,4 +1,4 @@
-import { IPublicTypeNodeSchema, logger } from '@alilc/lowcode-engine';
+import { IPublicTypeNodeSchema, logger, event as engineEvent } from '@alilc/lowcode-engine';
 import { utils } from '@alilc/lowcode-renderer-core';
 import { DataSource, IBaseRendererProps, IRendererAppHelper } from '@alilc/lowcode-renderer-core/lib/types';
 import { capitalizeFirstLetter, DataHelper, forEach, getI18n, getValue, isEmpty, isSchema, parseExpression, parseThisRequiredExpression } from '@alilc/lowcode-renderer-core/lib/utils';
@@ -56,6 +56,8 @@ export default class BaseRenderer extends PureComponent<IBaseRendererProps> {
   setLocale: any;
   dataSourceMap: Record<string, any> = {};
 
+  engineEvent: any;
+
   __namespace = 'base';
   __compScopes: Record<string, any> = {};
   __instanceMap: Record<string, any> = {};
@@ -79,6 +81,7 @@ export default class BaseRenderer extends PureComponent<IBaseRendererProps> {
     this.__init(props);
     this.__afterInit(props);
     this.__debug(`constructor - ${props?.__schema?.fileName}`);
+    this.engineEvent = engineEvent;
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -4,10 +4,10 @@
   "fileName": "",
   "props": {},
   "methods": {
-		"onCommandEvent": {
+		"getEngineEvent": {
 			"type": "JSFunction",
-			"value": "function onCommandEvent(...args) {\n  var _this$utils;\n  this === null || this === void 0 || (_this$utils = this.utils) === null || _this$utils === void 0 || _this$utils.execCommandEvent(args);\n}",
-			"source": "function onCommandEvent(...args) {\n  this?.utils?.execCommandEvent(args);\n}"
+			"value": "function getEngineEvent() {\n  return this.engineEvent;\n}",
+			"source": "function getEngineEvent() {\n  return this.engineEvent;\n}"
 		}
 	},
   "children": [
@@ -47,18 +47,18 @@
         "__events": {
           "eventDataList": [{
             "type": "componentEvent",
-            "name": "onCommandEvent",
-            "relatedEventName": "onCommandEvent"
+            "name": "getEngineEvent",
+            "relatedEventName": "getEngineEvent"
           }],
           "eventList": [{
-            "name": "onCommandEvent",
+            "name": "getEngineEvent",
             "propType": "func",
             "disabled": true
           }]
         },
-        "onCommandEvent": {
+        "getEngineEvent": {
           "type": "JSFunction",
-          "value": "function(){return this.onCommandEvent.apply(this,Array.prototype.slice.call(arguments).concat([])) }"
+          "value": "function(){return this.getEngineEvent.apply(this,Array.prototype.slice.call(arguments).concat([])) }"
         }
       }
     }

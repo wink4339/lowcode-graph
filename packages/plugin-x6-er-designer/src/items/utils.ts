@@ -34,7 +34,8 @@ export const getComponentView = (nodeModel: NodeModel) => {
 
 export function getPropList(model: NodeModel) {
   const propsData = model.propsData || {}
-  const propsList = []
+
+  let propsList = []
   for(let k in propsData) {
     if (k === "position" || k === "ports") continue
     // @ts-ignore
