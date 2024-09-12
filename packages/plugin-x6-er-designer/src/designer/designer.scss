@@ -38,6 +38,15 @@
         background-size: 14px 13px;
     }
 
+    .remove:before {
+        content: "";
+        display: block;
+        width: 14px;
+        height: 14px;
+        background-image: url(https://img.yunxy.top/imgextra/remove.svg);
+        background-size: 14px 14px;
+    }
+
     .redo {
         transform: rotateY(180deg);
     }

@@ -16,7 +16,8 @@ export function initEvents(graph: Graph) {
   })
 
   // 增加 node:added 事件，将 ports 数据更新到 schema 中，便于保存
-  graph.on('node:added',({ node, index, options }) => {
+  graph.on('node:added',({ node }) => {
+    selectedNode(graph, node)
     const nodeModel = project.currentDocument?.getNodeById(node.id) as any
     if (nodeModel) {
       nodeModel.setPropValue('ports', node.getPorts())
@@ -42,6 +43,7 @@ export function initEvents(graph: Graph) {
         })
       }
     }
+
   })
 
   graph.on('node:moved', ({ e, x, y, node, view }) => {
@@ -55,7 +57,6 @@ export function initEvents(graph: Graph) {
     graph.panning.autoPanning(x, y)
   })
 
-
   graph.on('selection:changed', (args: {
     added: Cell[]     // 新增被选中的节点/边
     removed: Cell[]   // 被取消选中的节点/边
@@ -63,11 +64,7 @@ export function initEvents(graph: Graph) {
   }) => {
     const { selected, removed, added } = args
     var selectedIds = selected.map(cell => cell.id)
-    const oldSelectedIds = project.currentDocument?.selection?.getNodes().map(e => e.id) || []
-    const newSelectedIds = selectedIds.filter(id => !oldSelectedIds.includes(id))
-    if (newSelectedIds && newSelectedIds.length) {
-      project.currentDocument?.selection.selectAll(newSelectedIds)
-    }
+    project.currentDocument?.selection.selectAll(selectedIds)
 
     selected.forEach(cell => {
       if (cell.isEdge()) {
@@ -81,6 +78,14 @@ export function initEvents(graph: Graph) {
         if (targetNode) {
           targetNode.toFront()
         }
+      } else {
+        cell.prop('focused', true)
+        cell.attr('body/stroke', SelectedColor)
+        const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>
+        if (ports) {
+          showPorts(ports, true)
+        }
+        cell.toFront()
       }
     })
 
@@ -115,19 +120,7 @@ export function initEvents(graph: Graph) {
 
   // 鼠标按下（节点）
   graph.on('node:mousedown', function ({cell}) {
-    graph.cleanSelection()
-    cell.prop('focused', true)
-    cell.attr('body/stroke', SelectedColor)
-    const ports = cell.findView(graph)?.container.querySelectorAll('.x6-port-body') as NodeListOf<SVGAElement>
-    if (ports) {
-      showPorts(ports, true)
-    }
-    cell.toFront()
-  })
-
-  // 鼠标松开（节点）
-  graph.on('node:mouseup', function ({cell}) {
-    graph.select(cell)
+    selectedNode(graph, cell)
   })
 
   // 鼠标移入（节点）
@@ -159,4 +152,13 @@ export function initEvents(graph: Graph) {
   graph.on('edge:mousedown', function ({cell}) {
     cell.attr('line/stroke', SelectedColor)
   })
+}
+
+function selectedNode(graph: Graph, cell: any) {
+  const selectedIds = graph.getSelectedCells().map((e: any) => e.id)
+  if (selectedIds.some((id: any) => id === cell.id)) return
+  graph.cleanSelection()
+  setTimeout(() => {
+    graph.select(cell)
+  }, 100)
 }
