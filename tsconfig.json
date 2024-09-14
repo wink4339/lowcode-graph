@@ -41,11 +41,17 @@
       "@alilc/lce-graph-g6-designer": [
         "plugin-g6-designer/src"
       ],
+      "@wink4339/lce-graph-generic-dialog": [
+        "plugin-generic-dialog/src"
+      ],
       "@wink4339/lce-graph-x6-designer": [
         "plugin-x6-designer/src"
       ],
       "@wink4339/lce-graph-x6-er-designer": [
         "plugin-x6-er-designer/src"
+      ],
+      "@wink4339/lce-graph-x6-er-indexes": [
+        "plugin-x6-er-indexes/src"
       ],
       "@alilc/lce-graph-tools": [
         "plugin-tools/src"

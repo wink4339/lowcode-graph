@@ -94,6 +94,10 @@ export class DesignerView extends PureComponent<IProps, IState> {
     })
   }
 
+  handleAddNewNode = (node: any) => {
+
+  }
+
   updateUndoRedoState = (state: number): void => {
     this.setState((prevState) => ({
       ...prevState, 
@@ -164,7 +168,6 @@ export class DesignerView extends PureComponent<IProps, IState> {
         this.handleDelete(params.id)
         break
     }
-    console.log("监听: ", params)
   }
 
   componentWillUnmount() {

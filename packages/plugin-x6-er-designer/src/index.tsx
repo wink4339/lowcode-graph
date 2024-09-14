@@ -10,7 +10,7 @@ import { DesignerView } from './designer/designer-view'
  * @param ctx 
  * @returns 
  */
-const PluginX6Designer = (ctx: IPublicModelPluginContext, options: any) => {
+const PluginX6ErDesigner = (ctx: IPublicModelPluginContext, options: any) => {
   const id = options?.id || uuid()
   const designer = new Designer(id)
   const rootState = new RootState()
@@ -49,8 +49,8 @@ const PluginX6Designer = (ctx: IPublicModelPluginContext, options: any) => {
   }
 }
 
-PluginX6Designer.pluginName = 'plugin-x6-designer'
-PluginX6Designer.meta = {
+PluginX6ErDesigner.pluginName = 'plugin-x6-er-designer'
+PluginX6ErDesigner.meta = {
   preferenceDeclaration: {
     title: '参数定义',
     properties: [{
@@ -60,4 +60,4 @@ PluginX6Designer.meta = {
     }]
   }
 }
-export default PluginX6Designer
+export default PluginX6ErDesigner
