@@ -3,9 +3,11 @@ import PluginX6ErDesigner from '@wink4339/lce-graph-x6-er-designer'
 import PluginErMaterialsPane from '@wink4339/lce-graph-er-materials-pane'
 import PluginCore from '@wink4339/lce-graph-core'
 import PluginGenericDialog from '@wink4339/lce-graph-generic-dialog'
+import PluginX6ErIndexes from '@wink4339/lce-graph-x6-er-indexes'
 import assets from './static/assets.json'
 import schema from './static/schema.json'
 import appHelper from './appHelper'
+import './global.scss'
 
 async function registerPlugins() {
   await plugins.register(PluginCore, {
@@ -13,6 +15,7 @@ async function registerPlugins() {
     schema
   })
   await plugins.register(PluginGenericDialog)
+  await plugins.register(PluginX6ErIndexes)
   await plugins.register(PluginX6ErDesigner)
   await plugins.register(PluginErMaterialsPane)
 }
