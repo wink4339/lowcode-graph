@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, useRef } from 'react'
-import { Icon, Dialog, Checkbox, Balloon } from '@alifd/next'
+import { Icon, Dialog, Checkbox, Balloon, Button } from '@alifd/next'
 import { event } from '@alilc/lowcode-engine';
 import './index.scss'
 import { IDiaogOptions } from '../types';
@@ -7,16 +7,16 @@ import { v4 as uuid } from 'uuid';
 
 const DialogContext = createContext({
   openDialog: (options: IDiaogOptions = {}) => {
-    event.emit('generic.openDialog', options)
+    event.emit('indexes.openDialog', options)
   },
   closeDialog: () => {
-    event.emit('generic.closeDialog')
+    event.emit('indexes.closeDialog')
   },
   openDialogLoading: () => {
-    event.emit('generic.openDialogLoading')
+    event.emit('indexes.openDialogLoading')
   },
   closeDialogLoading: () => {
-    event.emit('generic.closeDialogLoading')
+    event.emit('indexes.closeDialogLoading')
   }
 })
 
@@ -24,33 +24,27 @@ export const useDialog = () => useContext(DialogContext)
 
 export default function InlineDialog() {
 
-  const refs = useRef([]);
-
   const [visible, setVisible] = useState(false)
   const [options, setOptions] = useState({} as IDiaogOptions)
   const [loading, setLoading] = useState(false)
 
+  const [btnDisabled, setBtnDisabled] = useState(true)
   const [columns, setColumns] = useState([] as any)
-  const [columnsMap, setColumnsMap] = useState({} as any)
-
-  const [fieldsRef, setFieldsRef] = useState({} as any)
-
   const [indexes, setIndexes] = useState([] as any)
-  const [selectedIndex, setSelectedIndex] = useState('')
   const [selected, setSelected] = useState('')
 
   useEffect(() => {
     init()
-    event.on(`common:generic.openDialog`, openDialog)
-    event.on(`common:generic.closeDialog`, closeDialog)
-    event.on(`common:generic.openDialogLoading`, openDialogLoading)
-    event.on(`common:generic.closeDialogLoading`, closeDialogLoading)
+    event.on(`common:indexes.openDialog`, openDialog)
+    event.on(`common:indexes.closeDialog`, closeDialog)
+    event.on(`common:indexes.openDialogLoading`, openDialogLoading)
+    event.on(`common:indexes.closeDialogLoading`, closeDialogLoading)
 
     return () => {
-      event.off('common:generic.openDialog', openDialog)
-      event.off('common:generic.closeDialog', closeDialog)
-      event.off('common:generic.openDialogLoading', openDialogLoading)
-      event.off('common:generic.closeDialogLoading', closeDialogLoading)
+      event.off('common:indexes.openDialog', openDialog)
+      event.off('common:indexes.closeDialog', closeDialog)
+      event.off('common:indexes.openDialogLoading', openDialogLoading)
+      event.off('common:indexes.closeDialogLoading', closeDialogLoading)
     }
   }, [])
 
@@ -58,7 +52,8 @@ export default function InlineDialog() {
     const columns = [
       {
         columnId: "id",
-        columnName: "ID"
+        columnName: "ID",
+        disabled: true
       },
       {
         columnId: "username",
@@ -81,21 +76,7 @@ export default function InlineDialog() {
         columnName: "更新时间"
       }
     ]
-    let columnsMap = {} as any
-    for(let i in columns) {
-      columnsMap[columns[i].columnId] = i
-    }
-    
     setColumns(columns)
-    setColumnsMap(columnsMap)
-
-    // setIndexes([
-    //   {
-    //     id: "",
-    //     name: "",
-    //     fields: []
-    //   }
-    // ])
   }
 
 
@@ -112,7 +93,7 @@ export default function InlineDialog() {
   const closeDialogLoading = () => setLoading(false)
 
   const onConfirm = () => {
-    options.onConfirm && options.onConfirm()
+    options.onConfirm && options.onConfirm({entityId: options.entityId, indexes})
   }
 
   const onCancel = () => {
@@ -123,16 +104,21 @@ export default function InlineDialog() {
     }
   }
 
+  const updateBtnDisbaled = () => {
+    if (!btnDisabled) return
+    setBtnDisabled(false)
+  }
+
   const addIndex = () => {
     const key = uuid()
     const index = {
       key,
-      id: '',
       name: '',
       fields: []
     } as any
     setIndexes(indexes.concat(index))
     setSelected(key)
+    updateBtnDisbaled()
   }
 
   const findColumn = (columnId: string) => {
@@ -225,13 +211,17 @@ export default function InlineDialog() {
     index.name = generateIndexName(index)
     indexes[index.i] = index
     setIndexes(JSON.parse(JSON.stringify(indexes)))
+    updateBtnDisbaled()
   }
 
   const handleSelectedFieldChange = (id: string) => {
     let index = findIndex(selected)
-    let field = findIndexField(selected, id)
-    index.fields.splice(field.i, 1)
-    resetSelected()
+    index.fields = index.fields.filter((e: any) => e.id != id)
+    index.name = generateIndexName(index)
+    indexes[index.i] = index
+
+    setIndexes(JSON.parse(JSON.stringify(indexes)))
+    updateBtnDisbaled()
   }
 
   const handleSelectedFieldSortOrderChange = (id: string, sortOrder: string) => {
@@ -241,6 +231,7 @@ export default function InlineDialog() {
     index.fields[field.i] = field
     indexes[index.i] = index
     setIndexes(JSON.parse(JSON.stringify(indexes)))
+    updateBtnDisbaled()
   }
 
 
@@ -249,108 +240,25 @@ export default function InlineDialog() {
   }
 
   const handleRemoveIndex = (k: string) => {
-    const index = findIndex(k)
-    indexes.splice(index.i, 1)
+    const newIndexes = indexes.filter((e: any) => e.key != k)
     if (selected == k) setSelected('')
-    setIndexes(JSON.parse(JSON.stringify(indexes)))
-  }
-
-  let eleId: any
-  let eleTop = 0
-  let offsetY = 0
-  let dragging = false
-  let maxTop = 0
-  let moveFields = [] as any[]
-
-  const handleMouseDown = (id: any, event: any) => {
-    if (dragging) return
-
-    const index = findIndex(selected)
-    if(index.fields.length < 2) return
-
-    const ele = document.getElementById(id) as HTMLElement 
-    const lastEle = document.getElementById(index.fields[index.fields.length - 1].id) as HTMLElement;
-    eleTop = Number.parseInt(ele.style.top.replace('px', ''))
-    maxTop = Number.parseInt(lastEle.style.top.replace('px', ''))
-
-    offsetY = event.clientY
-    eleId = id
-    dragging = true
-  };
-
-  const handleMouseMove = (event: any) => {
-    if (!dragging) return
-    const ele = document.getElementById(eleId) as HTMLElement 
-    const newY = event.clientY - offsetY;
-    let top = eleTop + newY
-    if (top < 0) top = 1
-    if (top > maxTop) top = maxTop
-   
-    ele.style.top = `${top}px`
-    ele.style.zIndex = '999'
-
-    const index = findIndex(selected)
-    const fields = index.fields
-
-    const position = Math.round(top / 45.0)
-    const fPositin = findIndexField(selected, eleId).i
-    if ( position == fPositin) return
-
-    let tmp = fields[fPositin]
-    if (position < fPositin) {
-      for (let i = fPositin; i > position; i--) {
-        fields[i] = fields[i - 1]
-        const ele = document.getElementById(fields[i].id) as HTMLElement 
-        ele.style.top = `${i*45}px`
-        ele.style.marginTop = `${i == 0 ? 0 : -1}px`
-      } 
-    }
-    if (position > fPositin) {
-      for(let i=fPositin; i < position; i++) {
-        fields[i] = fields[i + 1]
-        const ele = document.getElementById(fields[i].id) as HTMLElement 
-        ele.style.top = `${i*45}px`
-        ele.style.marginTop = `${i == 0 ? 0 : -1}px`
-      }
-    }
-    fields[position] = tmp
-  }
-
-  const handleMouseUp = (event: any) => {
-    dragging = false
-    resetSelected()
-  }
-
-  const resetSelected = () => {
-    let index = findIndex(selected)
-    const fields = index.fields
-    for(let i=0; i<fields.length; i++) {
-      const ele = document.getElementById(fields[i].id) as HTMLElement 
-      ele.style.top = `${i*45}px`
-      ele.style.marginTop = `${i == 0 ? 0 : -1}px`
-      ele.style.zIndex = '0'
-    }
-    index.name = generateIndexName(index)
-    indexes[index.i] = index
-    setIndexes(JSON.parse(JSON.stringify(indexes)))
+    setIndexes(newIndexes)
   }
 
   const size = selectedColumns().length
-  console.log("高度", size)
   const height = 46
   const dragHeight = size * (height - 1)
-  console.log("refs.current", refs)
   return (
     <Dialog
       v2  
       title={'系统角色 索引'}
-      visible={true}
+      visible={visible}
       isFullScreen={true}
       overflowScroll={false}
       onOk={onConfirm}
       onCancel={onCancel}
       onClose={onCancel}
-      okProps={{loading}}>
+      okProps={{loading, children: "保存", disabled: btnDisabled}}>
         <div className='data-model-grid-model-editor' style={{overflow: 'hidden'}}>
           <div className='data-model-editor-fields-index'>
             <div className='field-menu'>
@@ -386,16 +294,11 @@ export default function InlineDialog() {
                       {
                         selectedColumns().map((e: any, i) => 
                           <div
-                            id={e.columnId} 
                             key={e.columnId}
                             className='base-component-sort-list-item fields-item' 
                             style={{height, top: i * (height - 1)}}
-                            onMouseMove={handleMouseMove}
-                            onMouseUp={handleMouseUp}
                           >
-                            <span className='base-component-sort-list-item-drag' style={{height}} 
-                              onMouseDown={(event) => handleMouseDown(e.columnId, event)}
-                            />
+                            <span className='base-component-sort-list-item-drag' style={{height}} />
                             <div className='base-component-sort-list-item-content'>
                               <Checkbox style={{margin: '0px 16px'}} defaultChecked onChange={() => handleSelectedFieldChange(e.columnId)}/>{e.columnName}
                             </div>

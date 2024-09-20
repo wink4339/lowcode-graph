@@ -27,6 +27,7 @@ interface IState {
   undo: boolean,
   redo: boolean,
   remove: boolean,
+  syncDatabase: boolean
 }
 
 export class DesignerView extends PureComponent<IProps, IState> {
@@ -47,6 +48,7 @@ export class DesignerView extends PureComponent<IProps, IState> {
       undo: false,
       redo: false,
       remove: false,
+      syncDatabase: false
     }
   }
 
@@ -71,6 +73,19 @@ export class DesignerView extends PureComponent<IProps, IState> {
    
   }
 
+  handleSyncDatabaseClick = () => {
+    this.setState((prevState) => ({
+      ...prevState, 
+      syncDatabase: true
+    }))
+    setTimeout(() => {
+      this.setState((prevState) => ({
+        ...prevState, 
+        syncDatabase: false
+      }))
+    }, 1500)
+  }
+
   handleDelete = (nodeId: any) => {
     const {ctx} = this.props
     const node = ctx.project.currentDocument?.getNodeById(nodeId) as any
@@ -90,6 +105,8 @@ export class DesignerView extends PureComponent<IProps, IState> {
         })
         ctx.project.currentDocument?.removeNode(node.id)
         ctx.plugins.GenericDialog.close()
+
+        // TODO 发送更新事件
       }
     })
   }
@@ -180,7 +197,7 @@ export class DesignerView extends PureComponent<IProps, IState> {
 
   render() {
     const id = this.props.id
-    const { graph, schema, appHelper, undo, redo, remove} = this.state
+    const { graph, schema, appHelper, undo, redo, remove, syncDatabase} = this.state
     return (
       <div className="lc-designer lowcode-plugin-designer">
         <div className="lc-project">
@@ -194,6 +211,9 @@ export class DesignerView extends PureComponent<IProps, IState> {
               </Tooltip>
               <Tooltip v2 trigger={<span className={remove ? 'remove' : 'remove diabled'} onClick={this.handleRemoveClick} />}>
                 删除
+              </Tooltip>
+              <Tooltip v2 trigger={<span className={syncDatabase ? 'sync-database' : 'database'} onClick={this.handleSyncDatabaseClick} />}>
+                同步数据库
               </Tooltip>
             </div>
             <div id={`design-view-${id}`} ref={this.refContainer} >

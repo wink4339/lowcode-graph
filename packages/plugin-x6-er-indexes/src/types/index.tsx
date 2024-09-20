@@ -7,9 +7,9 @@ export enum DiaogType {
 }
 
 export interface IDiaogOptions {
-  title?: string,
-  content?: string,
-  type?: DiaogType,
+  entityId?: any,
+  columns?: any,
+  indexes?: string,
   onConfirm?: any,
   onCancle?: any
 }
