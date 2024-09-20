@@ -22,5 +22,8 @@
     "@alib/build-scripts": "^0.1.18",
     "build-plugin-component": "^1.10.0"
   },
-  "gitHead": "7ed863fe077671622a9901f670a9311aa85c3615"
+  "gitHead": "7ed863fe077671622a9901f670a9311aa85c3615",
+  "dependencies": {
+    "uuid": "^10.0.0"
+  }
 }

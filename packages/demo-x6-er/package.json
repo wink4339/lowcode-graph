@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "@alib/build-scripts": "^0.1.18",
+    "@types/uuid": "^10.0.0",
     "build-plugin-component": "^1.10.0",
     "build-plugin-fusion": "^0.1.0",
     "build-plugin-moment-locales": "^0.1.0",
