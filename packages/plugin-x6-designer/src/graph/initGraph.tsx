@@ -1,8 +1,8 @@
 import { Graph, Shape } from '@antv/x6'
 import { project } from '@alilc/lowcode-engine'
-import x6Designer from '../designer'
+import { Designer } from '../designer/designer'
 
-export function initGraph(container: HTMLElement) {
+export function initGraph(designer: Designer, container: HTMLElement) {
   //@ts-ignore
   const graph = window._X6Graph = new Graph({
     container,
@@ -92,7 +92,7 @@ export function initGraph(container: HTMLElement) {
       },
     },
     onEdgeLabelRendered(args) {
-      const onEdgeLabelRenderCb = x6Designer.onEdgeLabelRender()
+      const onEdgeLabelRenderCb = designer.onEdgeLabelRender()
       for (const cb of onEdgeLabelRenderCb) {
         cb(args)
       }

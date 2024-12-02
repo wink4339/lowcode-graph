@@ -5,12 +5,15 @@ import NodeComponent from './node'
 import EdgeComponent from './edge'
 import { Node, Edge, Graph } from '@antv/x6'
 import { RootState } from "./state"
+import { Designer } from '../designer/designer'
 import './index.less'
 
 interface Props {
+  pageCtx: any,
   graph: Graph
   rootState: RootState
-  ctx: IPublicModelPluginContext
+  ctx: IPublicModelPluginContext,
+  designer: Designer
 }
 
 /**
@@ -68,7 +71,7 @@ class Nodes extends React.PureComponent<Props> {
   }
 
   render() {
-    const { graph, rootState } = this.props
+    const { pageCtx, graph, rootState, ctx, designer } = this.props
     const nodes = rootState.getNodes()
     const items = nodes.filter(v => typeof v.isPage === 'function' ? !v.isPage() : !v.isPage)
     return (
@@ -81,9 +84,11 @@ class Nodes extends React.PureComponent<Props> {
                   key={node.id}
                   onMountEdge={this.onMountEdge}
                   onUnMountEdge={this.onUnMountEdge}
+                  pageCtx={pageCtx}
                   model={node}
                   graph={graph}
-                  ctx={this.props.ctx}
+                  ctx={ctx}
+                  designer = {designer}
                 />
               )
             } else {
@@ -92,9 +97,11 @@ class Nodes extends React.PureComponent<Props> {
                   key={node.id}
                   onMountNode={this.onMountNode}
                   onUnMountNode={this.onUnMountNode}
+                  pageCtx={pageCtx}
                   model={node}
                   graph={graph}
-                  ctx={this.props.ctx}
+                  ctx={ctx}
+                  designer = {designer}
                 />)
             }
           })

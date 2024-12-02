@@ -2,6 +2,8 @@ import { Node } from '@antv/x6'
 import { Node as NodeModel } from '@alilc/lowcode-shell'
 import { material } from '@alilc/lowcode-engine'
 import { get } from 'lodash'
+import { isJSExpression, isJSFunction } from '@alilc/lowcode-utils';
+import {  parseExpression } from '@alilc/lowcode-renderer-core/lib/utils';
 
 export const getComponentView = (nodeModel: NodeModel) => {
   const { componentName } = nodeModel
@@ -31,36 +33,28 @@ export const getComponentView = (nodeModel: NodeModel) => {
 }
 
 export function getPropList(model: NodeModel) {
-  const configure = model.componentMeta?.configure
-
-  if (!Array.isArray(configure)) {
-    return []
-  }
-
-  const props = configure.find(item => item.name === '#props')
-
-  if (!Array.isArray(props?.items)) {
-    return []
-  }
-
   const propsData = model.propsData || {}
 
-  return props?.items?.map(item => {
-    const value = get(propsData, item.name) ?? item.defaultValue
-    return {
-      name: item.name,
-      value,
-    }
-  })
+  let propsList = []
+  for(let k in propsData) {
+    if (k === "position" || k === "ports") continue
+    // @ts-ignore
+    propsList.push({name: k, value: propsData[k]})
+  }
+  return propsList
 }
 
-export function updateNodeProps(model: NodeModel, node: Node) {
+export function updateNodeProps(model: NodeModel, node: Node, pageCtx: any) {
   const propList = getPropList(model) || []
   propList.forEach(item => {
     if (item.name === undefined) {
       return
+    } 
+    let value = deepClone(item.value)
+    if (value && (isJSExpression(value) || isJSFunction(value))) {
+      value = parseExpression(value, pageCtx);
     }
-    node.prop(item.name, deepClone(item.value))
+    node.prop(item.name, value)
   })
 }
 
