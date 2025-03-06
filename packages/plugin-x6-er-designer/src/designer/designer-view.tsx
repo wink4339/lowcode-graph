@@ -9,6 +9,7 @@ import { initEvents } from "../graph/initEvents"
 import { RootState } from "../items/state"
 import PageRender from "../renderer/page"
 import "./designer.scss"
+import { request } from "../request"
 
 const Tooltip = Balloon.Tooltip
 
@@ -27,6 +28,7 @@ interface IState {
   undo: boolean,
   redo: boolean,
   remove: boolean,
+  saveing: boolean,
   syncDatabase: boolean
 }
 
@@ -48,6 +50,7 @@ export class DesignerView extends PureComponent<IProps, IState> {
       undo: false,
       redo: false,
       remove: false,
+      saveing: false,
       syncDatabase: false
     }
   }
@@ -73,17 +76,20 @@ export class DesignerView extends PureComponent<IProps, IState> {
    
   }
 
+  handleSaveClick = async () => {
+    this.setState({saveing: true}, () => {
+      request("datamodel.save").finally(() => {
+        this.setState({saveing: false})
+      })
+    })
+  }
+
   handleSyncDatabaseClick = () => {
-    this.setState((prevState) => ({
-      ...prevState, 
-      syncDatabase: true
-    }))
-    setTimeout(() => {
-      this.setState((prevState) => ({
-        ...prevState, 
-        syncDatabase: false
-      }))
-    }, 1500)
+    this.setState({syncDatabase: true}, () => {
+      request("datamodel.sync").finally(() => {
+        this.setState({syncDatabase: false})
+      })
+    })
   }
 
   handleDelete = (nodeId: any) => {
@@ -105,8 +111,6 @@ export class DesignerView extends PureComponent<IProps, IState> {
         })
         ctx.project.currentDocument?.removeNode(node.id)
         ctx.plugins.GenericDialog.close()
-
-        // TODO 发送更新事件
       }
     })
   }
@@ -197,7 +201,7 @@ export class DesignerView extends PureComponent<IProps, IState> {
 
   render() {
     const id = this.props.id
-    const { graph, schema, appHelper, undo, redo, remove, syncDatabase} = this.state
+    const { graph, schema, appHelper, undo, redo, remove, saveing, syncDatabase} = this.state
     return (
       <div className="lc-designer lowcode-plugin-designer">
         <div className="lc-project">
@@ -212,7 +216,10 @@ export class DesignerView extends PureComponent<IProps, IState> {
               <Tooltip v2 trigger={<span className={remove ? 'remove' : 'remove diabled'} onClick={this.handleRemoveClick} />}>
                 删除
               </Tooltip>
-              <Tooltip v2 trigger={<span className={syncDatabase ? 'sync-database' : 'database'} onClick={this.handleSyncDatabaseClick} />}>
+              <Tooltip v2 trigger={<span className={saveing ? 'loading' : 'save'} onClick={this.handleSaveClick} />}>
+                保存
+              </Tooltip>
+              <Tooltip v2 trigger={<span className={syncDatabase ? 'loading' : 'database'} onClick={this.handleSyncDatabaseClick} />}>
                 同步数据库
               </Tooltip>
             </div>

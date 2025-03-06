@@ -56,7 +56,16 @@
         background-size: 14px 14px;
     }
 
-    .sync-database:before {
+    .save:before {
+        content: "";
+        display: block;
+        width: 14px;
+        height: 14px;
+        background-image: url(https://img.yunxy.top/imgextra/save4.svg);
+        background-size: 14px 14px;
+    }
+
+    .loading:before {
         content: "";
         display: block;
         width: 14px;

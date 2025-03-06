@@ -8,6 +8,7 @@ import assets from './static/assets.json'
 import schema from './static/schema.json'
 import appHelper from './appHelper'
 import './global.scss'
+import './request'
 
 async function registerPlugins() {
   await plugins.register(PluginCore, {

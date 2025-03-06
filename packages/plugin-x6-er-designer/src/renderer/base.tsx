@@ -337,9 +337,9 @@ export default class BaseRenderer extends PureComponent<IBaseRendererProps> {
     return this.appHelper?.constants;
   }
 
-  get history() {
-    return this.appHelper?.history;
-  }
+  // get history() {
+  //   return this.appHelper?.history;
+  // }
 
   get location() {
     return this.appHelper?.location;
