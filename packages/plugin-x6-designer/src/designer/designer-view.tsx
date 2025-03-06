@@ -10,6 +10,7 @@ import { RootState } from "../items/state"
 import PageRender from "../renderer/page"
 import "./designer.scss"
 import { registerConnector } from "../graph/registerShape"
+import { request } from "../request"
 
 const Tooltip = Balloon.Tooltip
 
@@ -74,17 +75,12 @@ export class DesignerView extends PureComponent<IProps, IState> {
    
   }
 
-  handleSyncDatabaseClick = () => {
-    this.setState((prevState) => ({
-      ...prevState, 
-      syncDatabase: true
-    }))
-    setTimeout(() => {
-      this.setState((prevState) => ({
-        ...prevState, 
-        syncDatabase: false
-      }))
-    }, 1500)
+  handleSaveClick = async () => {
+    this.setState({saveing: true}, () => {
+      request("logicflow.save").finally(() => {
+        this.setState({saveing: false})
+      })
+    })
   }
 
   handleDelete = (nodeId: any) => {
@@ -193,7 +189,7 @@ export class DesignerView extends PureComponent<IProps, IState> {
               <Tooltip v2 trigger={<span className={remove ? 'remove' : 'remove diabled'} onClick={this.handleRemoveClick} />}>
                 删除
               </Tooltip>
-              <Tooltip v2 trigger={<span className={saveing ? 'loading' : 'save'} />}>
+              <Tooltip v2 trigger={<span className={saveing ? 'loading' : 'save'} onClick={this.handleSaveClick} />}>
                 保存
               </Tooltip>
             </div>

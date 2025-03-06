@@ -6,6 +6,7 @@ import { RemoveItemPlugin, OperateButtonPlugin, UndoRedoPlugin, ZoomPlugin, logo
 import PluginX6DesignerExtension from './plugins/x6-designer-extension';
 import assets from './static/assets.json';
 import schema from './static/schema.json';
+import "./request"
 
 (async function main() {
   await plugins.register(PluginCore, {
